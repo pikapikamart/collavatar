@@ -1,20 +1,22 @@
 import mongoose from "mongoose";
-import { CollavatarProjectITF } from "./collavatarProject";
+import { CollavatarProjectDocument } from "./collavatarProject";
+import { CollavatarNotificationDocument} from "./collavatarNotification";
 
 
-export interface CollavatarUserITF extends mongoose.Document {
+export interface CollavatarUserDocument extends mongoose.Document {
   githubId: string,
   githubEmail: string,
   githubRepoLink: string,
   githubAccessToken: string,
   username: string,
   userBio?: string,
+  userImage: string,
   createdAt: Date,
   updatedAt: Date,
-  collavProject? : CollavatarProjectITF[],
-  ownedProject?: CollavatarProjectITF[]
+  collavProject? : CollavatarProjectDocument[],
+  ownedProjects?: CollavatarProjectDocument[],
+  notifications: []
 }
-
 
 const collavatarUserSchema = new mongoose.Schema(
   {
@@ -46,6 +48,10 @@ const collavatarUserSchema = new mongoose.Schema(
       type: String,
       maxlength: 200
     },
+    userImage: {
+      type: String,
+      required: true
+    },
     collavProject: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -65,7 +71,7 @@ const collavatarUserSchema = new mongoose.Schema(
 );
 
 
-const CollavatarUser = mongoose.models?.CollavatarUser || mongoose.model<CollavatarUserITF>("CollavatarUser", collavatarUserSchema);
+const CollavatarUser = mongoose.models?.CollavatarUser || mongoose.model<CollavatarUserDocument>("CollavatarUser", collavatarUserSchema);
 
 
 export { CollavatarUser };

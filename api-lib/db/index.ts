@@ -1,4 +1,7 @@
 import mongoose from 'mongoose';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { NextHandler } from 'next-connect';
+
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
@@ -28,9 +31,14 @@ if (!cached) {
   cached = global.mongooseGlobal = { conn: null, promise: null };
 }
 
-async function connectDatabase() {
-  if (cached.conn) {
-    return cached.conn;
+async function connectDatabase(
+  req: NextApiRequest|null = null, 
+  res: NextApiResponse|null = null, 
+  next: NextHandler | null = null) {
+
+  if (cached.conn && next) {
+    // return cached.conn;
+    return next();
   }
 
   if (!cached.promise) {
@@ -43,7 +51,13 @@ async function connectDatabase() {
     });
   }
   cached.conn = await cached.promise;
-  return cached.conn;
+
+  if ( next ) {
+    return next();
+  }
+
+  return cached.conn ;
 }
+
 
 export { connectDatabase };

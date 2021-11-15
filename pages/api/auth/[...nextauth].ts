@@ -1,9 +1,22 @@
-import NextAuth, { User, Account, Profile } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
+import NextAuth, { User, Account, Profile, Session} from "next-auth";
+import { JWT } from "next-auth/jwt";
 import { connectDatabase } from "@/api-lib/db";
 import { CollavatarUser } from "@/api-lib/models/collavatarUser";
 import { fetchGithubEmail } from "@/api-lib/utils";
 
+
+interface NextAuthCallbackSignInITF {
+  user: User,
+  account: Account,
+  profile: Profile
+}
+
+interface NextAuthCallbackSessionITF {
+  session: Session,
+  user: User,
+  token: JWT
+}
 
 const nextAuthProviders = [
   GithubProvider({
@@ -17,15 +30,9 @@ const nextAuthProviders = [
   })
 ];
 
-interface NextAuthCallbacksITF {
-  user: User,
-  account: Account,
-  profile: Profile
-}
-
 const nextAuthCallbacks = {
-  async signIn({ user, account, profile }: NextAuthCallbacksITF) {
-    await connectDatabase();
+  async signIn({ user, account, profile }: NextAuthCallbackSignInITF) {
+    await connectDatabase(null, null, null);
 
     const checkIfUserExist = await CollavatarUser.findOne({githubId: user.id});
    
@@ -37,19 +44,33 @@ const nextAuthCallbacks = {
         githubEmail: githubEmail,
         githubAccessToken: account.access_token && account.access_token,
         githubRepoLink: profile["html_url" as keyof typeof profile], 
-        username: user.name 
+        username: user.name,
+        userImage: user.image 
       }
 
       await CollavatarUser.create(newCollavatarUser);
     }
 
     return true;
+  },
+  async session({ session, user, token } : NextAuthCallbackSessionITF) {
+
+    const newSession = {
+      ...session,
+      user: {
+        ...session.user,
+        githubId: token.sub
+      }
+    }
+    return newSession; 
   }
 }
 
 const nextAuthOptions = {
   providers: nextAuthProviders,
-  callbacks: nextAuthCallbacks
+  callbacks: nextAuthCallbacks,
+  secret: process.env.HASH_SECRET as string
 }
+
 
 export default NextAuth(nextAuthOptions);

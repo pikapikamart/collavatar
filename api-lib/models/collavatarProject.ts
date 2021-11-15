@@ -1,21 +1,62 @@
 import mongoose from "mongoose";
-import { CollavatarUserITF } from "./collavatarUser";
+import { CollavatarUserDocument } from "./collavatarUser";
 
 
-export interface CollavatarProjectITF extends mongoose.Document {
-  projectOwner: string,
-  projectMembers?: CollavatarUserITF[],
-  projectTags?: String[],
-  projectStatus: string,
-  projectCapacity: string | number,
+interface ProjectTags {
+  tagName: String,
+  needed: Boolean
+}
+
+export interface CollavatarProjectDocument extends mongoose.Document {
+  projectName: String,
+  projectLink: String,
+  projectLimitation: Boolean,
+  projectCapacity: Number,
+  projectTags: ProjectTags[],
   projectDescription: string
+  projectStatus: String,
+  projectId: String,
+  projectOwner?: CollavatarUserDocument,
+  projectMembers?: CollavatarUserDocument[],
 }
 
 const collavatarProjectSchema = new mongoose.Schema({
-  projectOwner: {
+  projectName: {
     type: String,
+    required: true
+  },
+  projectLink: {
+    type: String,
+    required: true
+  },
+  projectLimitation: {
+    type: Boolean,
+    required: true
+  },
+  projectCapacity: {
+    type: Number,
     required: true,
-    unique: true
+    default: 0
+  },
+  projectTags: [{
+    tagName: {type: String},
+    needed: {type: Boolean}
+  }],
+  projectDescription: {
+    type: String,
+    required: true
+  },
+  projectId: {
+    type: String,
+    required: true
+  },
+  projectStatus: {
+    type: String,
+    required: true
+  },
+  projectOwner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "CollavatarUser"
   },
   projectMembers: [
     {
@@ -23,23 +64,10 @@ const collavatarProjectSchema = new mongoose.Schema({
       ref: "CollavatarUser"
     }
   ],
-  projectTags: [ String ],
-  projectStatus: {
-    type: String,
-    required: true
-  },
-  projectCapacity: {
-    type: String || Number,
-    required: true
-  },
-  projectDescripion: {
-    type: String,
-    required: true
-  }
 });
 
 
-const collavatarProject = mongoose.models?.CollavatarProject || mongoose.model<CollavatarProjectITF>("CollavatarProject", collavatarProjectSchema);
+const CollavatarProject = mongoose.models?.CollavatarProject || mongoose.model<CollavatarProjectDocument>("CollavatarProject", collavatarProjectSchema);
 
 
-export { collavatarProject };
+export { CollavatarProject };
