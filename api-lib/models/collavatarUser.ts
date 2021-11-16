@@ -13,9 +13,9 @@ export interface CollavatarUserDocument extends mongoose.Document {
   userImage: string,
   createdAt: Date,
   updatedAt: Date,
-  collavProject? : CollavatarProjectDocument[],
+  collaboratedProjects? : CollavatarProjectDocument[],
   ownedProjects?: CollavatarProjectDocument[],
-  notifications: []
+  notifications?: CollavatarNotificationDocument[]
 }
 
 const collavatarUserSchema = new mongoose.Schema(
@@ -52,7 +52,7 @@ const collavatarUserSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    collavProject: [
+    collaboratedProjects: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "CollavatarProject"
@@ -63,13 +63,18 @@ const collavatarUserSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "CollavatarProject"
       }
+    ],
+    notifications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "CollavatarNotification"
+      }
     ]
   },
   {
     timestamps: true
   }
 );
-
 
 const CollavatarUser = mongoose.models?.CollavatarUser || mongoose.model<CollavatarUserDocument>("CollavatarUser", collavatarUserSchema);
 

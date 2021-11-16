@@ -3,7 +3,11 @@ import { NextHandler } from "next-connect";
 import { getSession } from "next-auth/react";
 
 
-export const verifyUser = async (req: NextApiRequest, res: NextApiResponse, next: NextHandler) =>{
+export const verifyUser = async (
+  req: NextApiRequest, 
+  res: NextApiResponse, 
+  next: NextHandler
+) =>{
   const userSession = await getSession({ req });
 
   if ( userSession ) {

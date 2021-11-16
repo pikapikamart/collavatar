@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getGithubIdSession } from "../utils";
-import { findUser } from "../service/user.service";
+import { getGithubIdSession } from "@/api-lib/utils";
+import { findUser } from "@/api-lib/service/user.service";
 import { nanoid } from "nanoid";
-import { createProject } from "../service/project.service";
-import { validateError } from "../utils";
+import { createProject } from "@/api-lib/service/project.service";
+import { validateError } from "@/api-lib/utils";
 
 
 export const createProjectHandler = async(

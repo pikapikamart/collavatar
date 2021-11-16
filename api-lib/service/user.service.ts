@@ -1,4 +1,4 @@
-import { CollavatarUser, CollavatarUserDocument } from "../models/collavatarUser";
+import { CollavatarUser, CollavatarUserDocument } from "@/api-lib/models/collavatarUser";
 import { FilterQuery, UpdateQuery, QueryOptions } from "mongoose";
 
 

@@ -11,7 +11,7 @@ interface GithubEmail {
   visibility: null | string
 }
 
-export const fetchGithubEmail = async( accessToken: String ) =>{
+export const fetchGithubEmail = async( accessToken: string ) =>{
   const githubEmail = await fetch("https://api.github.com/user/emails", {
       headers: {
         "Authorization": `token ${accessToken}`
@@ -36,11 +36,15 @@ export const getGithubIdSession = async (req: NextApiRequest) =>{
   return null;
 }
 
-export function getProperty<Type, Key extends keyof Type>(object: Type, key: Key) {
+export function getProperty<Type, Key extends keyof Type>(object: Type, key: Key): Type[Key] {
   return object[key];
 }
 
-export const validateError = (error: unknown, httpStatus: number, res: NextApiResponse) =>{
+export const validateError = (
+  error: unknown, 
+  httpStatus: number, 
+  res: NextApiResponse
+) =>{
   if ( error instanceof ValidationError ) {
     console.log(error.errors);
     return res.status(httpStatus).send(error.errors)

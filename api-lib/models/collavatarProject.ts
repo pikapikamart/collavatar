@@ -3,19 +3,19 @@ import { CollavatarUserDocument } from "./collavatarUser";
 
 
 interface ProjectTags {
-  tagName: String,
-  needed: Boolean
+  tagName: string,
+  needed: boolean
 }
 
 export interface CollavatarProjectDocument extends mongoose.Document {
-  projectName: String,
-  projectLink: String,
-  projectLimitation: Boolean,
-  projectCapacity: Number,
+  projectName: string,
+  projectLink: string,
+  projectLimitation: boolean,
+  projectCapacity: number,
   projectTags: ProjectTags[],
   projectDescription: string
-  projectStatus: String,
-  projectId: String,
+  projectStatus: string,
+  projectId: string,
   projectOwner?: CollavatarUserDocument,
   projectMembers?: CollavatarUserDocument[],
 }
@@ -65,7 +65,6 @@ const collavatarProjectSchema = new mongoose.Schema({
     }
   ],
 });
-
 
 const CollavatarProject = mongoose.models?.CollavatarProject || mongoose.model<CollavatarProjectDocument>("CollavatarProject", collavatarProjectSchema);
 

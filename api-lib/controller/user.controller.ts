@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getGithubIdSession } from "../utils";
-import { findUser } from "../service/user.service";
-import { cloudinary } from "../utils/cloudinary";
-import { updateUser } from "../service/user.service";
-import { validateError } from "../utils";
+import { getGithubIdSession, validateError } from "@/api-lib/utils";
+import { updateUser,findUser } from "@/api-lib/service/user.service";
+import { cloudinary } from "@/api-lib/utils/cloudinary";
 
 
 interface UserUpdateProfile {

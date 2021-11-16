@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
 
+
 export interface CollavatarNotificationDocument {
-  username: String,
-  position: String,
-  message: String,
-  notification: String
+  username: string,
+  position: string,
+  message: string,
+  notification: string
 }
 
 const collavatarNotificationSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true
+  requester: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "CollavatarUser"
   },
   position: {
     type: String,
@@ -26,7 +27,7 @@ const collavatarNotificationSchema = new mongoose.Schema({
   }
 });
 
-
 const CollavatarNotification = mongoose.models?.CollavatarNotification || mongoose.model<CollavatarNotificationDocument>("CollavatarNotification", collavatarNotificationSchema);
+
 
 export { CollavatarNotification };
