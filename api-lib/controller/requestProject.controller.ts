@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getGithubIdSession, getProperty } from "@/api-lib/utils";
 import { findUser } from "@/api-lib/service/user.service";
 import { findProject } from "@/api-lib/service/project.service";
-import { createNotification } from "@/api-lib/service/notification.service";
+import { createProjectRequest } from "@/api-lib/service/requestProject.service";
 import { validateError } from "@/api-lib/utils";
 
 
@@ -11,7 +11,7 @@ interface RequestQuery {
   userId?: string[]
 }
 
-export const createNotificationHandler = ( response: String ) => async(
+export const createProjectRequestHandler = async(
   req: NextApiRequest,
   res: NextApiResponse
 ) =>{
@@ -36,47 +36,16 @@ export const createNotificationHandler = ( response: String ) => async(
 
     if ( !requestedProject ) return res.status(404).send("Project requested not found.");
 
-    const notificationInfo = {
+    const requestInformation = {
       ...req.body,
       notificationType: "request",
       requester: currentUser._id
     }
 
-    await createNotification(notificationInfo, requestedProjectOwner);
+    await createProjectRequest(requestInformation, requestedProjectOwner);
     
     return res.status(200).send("Request for project successful.");
   } catch( error ){
     validateError(error, 400, res);
   } 
-}
-
-export const getNotificationsHandler = async(
-  req: NextApiRequest,
-  res: NextApiResponse
-) =>{
-  const githubId = await getGithubIdSession(req);
-
-  try {
-    if ( !githubId ) return res.status(401).send("User must be signed in.");
-    
-    const currentUser = await findUser({ githubId }, { lean: false });
-
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly");
-
-    const notificationsOptions = {
-      populationPath: "notifications",
-      populationMembers: "-_id username githubId"
-    }
-    await currentUser.populate({
-      path: notificationsOptions.populationPath,
-      populate: {
-        path: "requester",
-        select: notificationsOptions.populationMembers
-      }
-    });
-
-    return res.status(200).json(currentUser.notifications);
-  } catch( error ){
-    validateError(error, 400, res);
-  }
 }

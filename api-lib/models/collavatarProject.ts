@@ -58,7 +58,8 @@ const collavatarProjectSchema = new mongoose.Schema({
   },
   projectOwner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "CollavatarUser"
+    ref: "CollavatarUser",
+    required: true
   },
   projectMembers: [
     {
