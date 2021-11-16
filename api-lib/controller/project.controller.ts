@@ -13,7 +13,7 @@ export const createProjectHandler = async(
   const githubId = await getGithubIdSession(req);
 
   try {
-    if ( !githubId ) return res.status(401).send("User must be logged in.");
+    if ( !githubId ) return res.status(401).send("User must be signed in.");
 
     const currentUser = await findUser({ githubId }, { lean: false });
   

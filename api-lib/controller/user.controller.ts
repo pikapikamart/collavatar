@@ -18,7 +18,7 @@ export const updateUserHandler = async(
   const requestUpdateInformation: UserUpdateProfile = {...req.body};
   
   try {
-    if ( !githubId ) return res.status(401).send("User must be logged in.");
+    if ( !githubId ) return res.status(401).send("User must be signed in.");
 
     const currentUser = await findUser({ githubId });
 

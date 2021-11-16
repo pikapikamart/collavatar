@@ -20,7 +20,7 @@ export const createNotificationHandler = ( response: String ) => async(
   const userId = getProperty(requestQuery, "userId");
 
   try {
-    if ( !githubId ) return res.status(401).send("User must be logged in.");
+    if ( !githubId ) return res.status(401).send("User must be signed in.");
 
     const currentUser = await findUser({ githubId }, { lean: false });
     
@@ -29,6 +29,8 @@ export const createNotificationHandler = ( response: String ) => async(
     const requestedProjectOwner = userId? await findUser({ githubId: userId[0] }, { lean: false }) : null;
     
     if ( !requestedProjectOwner ) return res.status(404).send("Project owner not found.");
+
+    if ( githubId===requestedProjectOwner.githubId ) return res.status(409).send("Cannot send request for the same user.");
 
     const requestedProject = await findProject({ projectId: getProperty(requestQuery, "projectId") }, { lean: false });
 
@@ -46,4 +48,35 @@ export const createNotificationHandler = ( response: String ) => async(
   } catch( error ){
     validateError(error, 400, res);
   } 
+}
+
+export const getNotificationsHandler = async(
+  req: NextApiRequest,
+  res: NextApiResponse
+) =>{
+  const githubId = await getGithubIdSession(req);
+
+  try {
+    if ( !githubId ) return res.status(401).send("User must be signed in.");
+    
+    const currentUser = await findUser({ githubId }, { lean: false });
+
+    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly");
+
+    const notificationsOptions = {
+      populationPath: "notifications",
+      populationMembers: "-_id username githubId"
+    }
+    await currentUser.populate({
+      path: notificationsOptions.populationPath,
+      populate: {
+        path: "requester",
+        select: notificationsOptions.populationMembers
+      }
+    });
+
+    return res.status(200).json(currentUser.notifications);
+  } catch( error ){
+    validateError(error, 400, res);
+  }
 }

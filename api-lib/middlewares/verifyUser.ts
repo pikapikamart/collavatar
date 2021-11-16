@@ -10,7 +10,7 @@ export const verifyUser = async (
 ) =>{
   const userSession = await getSession({ req });
 
-  if ( userSession ) {
+  if ( userSession && userSession.user ) {
     return next();
   }
 

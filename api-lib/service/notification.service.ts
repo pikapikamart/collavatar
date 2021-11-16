@@ -1,6 +1,5 @@
 import { CollavatarNotificationDocument, CollavatarNotification } from "@/api-lib/models/collavatarNotification"
 import { CollavatarUserDocument } from "@/api-lib/models/collavatarUser";
-import { CollavatarProjectDocument } from "@/api-lib/models/collavatarProject";
 import { Error } from "mongoose";
 
 
