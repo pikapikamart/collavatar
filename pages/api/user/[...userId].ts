@@ -13,4 +13,6 @@ handler.use(connectDatabase);
 // Send request for project collaboration
 handler.post(verifyUser, validateRequest(createRequestSchema), createNotificationHandler("Request"));
 
+// Get all notifications
+handler.get(verifyUser);
 export default handler;

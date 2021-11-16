@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
+import { CollavatarUserDocument } from "@/api-lib/models/collavatarUser";
 
 
-export interface CollavatarNotificationDocument {
-  username: string,
+export interface CollavatarNotificationDocument extends mongoose.Document {
+  requester: CollavatarUserDocument["_id"],
   position: string,
   message: string,
-  notification: string
+  notificationType: string,
+  createdAt: Date,
+  updatedAt: Date
 }
 
 const collavatarNotificationSchema = new mongoose.Schema({
@@ -21,11 +24,12 @@ const collavatarNotificationSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  notification: {
+  notificationType: {
     type: String,
     required: true
   }
-});
+}, { timestamps: true }
+);
 
 const CollavatarNotification = mongoose.models?.CollavatarNotification || mongoose.model<CollavatarNotificationDocument>("CollavatarNotification", collavatarNotificationSchema);
 
