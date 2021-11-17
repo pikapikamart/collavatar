@@ -10,6 +10,8 @@ export interface NotificationDocument extends mongoose.Document {
   position: string,
   message: string,
   accepted?: Boolean,
+  responded: Boolean,
+  notificationId: string,
   createdAt: Date,
   updatedAt: Date
 }
@@ -38,11 +40,19 @@ const notificationSchema = new mongoose.Schema({
   },
   accepted: {
     type: Boolean
+  },
+  responded: {
+    type: Boolean,
+    required: true
+  },
+  notificationId: {
+    type: String,
+    required: true
   }
 }, { timestamps: true }
 );
 
-const NotificationModel = mongoose.models?.Notification || mongoose.model<Notification>("Notification", notificationSchema);
+const NotificationModel = mongoose.models?.Notification || mongoose.model<NotificationDocument>("Notification", notificationSchema);
 
 
 export { NotificationModel };
