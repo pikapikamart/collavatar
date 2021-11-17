@@ -1,20 +1,14 @@
-import { CollavatarUserDocument } from "@/api-lib/models/collavatarUser"
-import { CollavatarProject, CollavatarProjectDocument } from "@/api-lib/models/collavatarProject"
+import { UserDocument } from "@/api-lib/models/userModel";
+import { ProjectModel, ProjectDocument } from "@/api-lib/models/projectModel";
 import { Error, FilterQuery, QueryOptions } from "mongoose";
 
 
 export const createProject = async(
-  projectInfo: CollavatarProjectDocument, 
-  projectOwner: CollavatarUserDocument
+  projectInfo: ProjectDocument, 
+  projectOwner: UserDocument
 ) =>{
   try {
-    const newProject: CollavatarProjectDocument = await CollavatarProject.create(projectInfo);
-    // Save the currentUser as the owner and member of the project
-    newProject.projectOwner = projectOwner._id;
-    newProject.projectMembers?.push(projectOwner._id);
-    await newProject.save();
-    // End of saving currentUser as the owner and member of the project
-
+    const newProject: ProjectDocument = await ProjectModel.create(projectInfo);
     // Save the project as the owned project of current user
     projectOwner.ownedProjects?.push(newProject._id);
     await projectOwner.save();
@@ -27,8 +21,8 @@ export const createProject = async(
 }
 
 export const findProject = async(
-  query: FilterQuery<CollavatarProjectDocument>,
+  query: FilterQuery<ProjectDocument>,
   options: QueryOptions = { lean: true }
-): Promise<CollavatarProjectDocument> =>{
-  return CollavatarProject.findOne(query, options);
+): Promise<ProjectDocument> =>{
+  return ProjectModel.findOne(query, options);
 }

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { CollavatarUserDocument } from "./collavatarUser";
+import { UserDocument } from "./userModel";
 
 
 interface ProjectTags {
@@ -7,7 +7,7 @@ interface ProjectTags {
   needed: boolean
 }
 
-export interface CollavatarProjectDocument extends mongoose.Document {
+export interface ProjectDocument extends mongoose.Document {
   projectName: string,
   projectLink: string,
   projectLimitation: boolean,
@@ -16,13 +16,13 @@ export interface CollavatarProjectDocument extends mongoose.Document {
   projectDescription: string
   projectStatus: string,
   projectId: string,
-  projectOwner?: CollavatarUserDocument["_id"],
-  projectMembers?: CollavatarUserDocument["_id"][],
+  projectOwner?: UserDocument["_id"],
+  projectMembers?: UserDocument["_id"][],
   createdAt: Date,
   updatedAt: Date
 }
 
-const collavatarProjectSchema = new mongoose.Schema({
+const projectSchema = new mongoose.Schema({
   projectName: {
     type: String,
     required: true
@@ -58,19 +58,19 @@ const collavatarProjectSchema = new mongoose.Schema({
   },
   projectOwner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "CollavatarUser",
+    ref: "User",
     required: true
   },
   projectMembers: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "CollavatarUser"
+      ref: "User"
     }
   ],
 }, { timestamps: true }
 );
 
-const CollavatarProject = mongoose.models?.CollavatarProject || mongoose.model<CollavatarProjectDocument>("CollavatarProject", collavatarProjectSchema);
+const ProjectModel = mongoose.models?.Project || mongoose.model<ProjectDocument>("Project", projectSchema);
 
 
-export { CollavatarProject };
+export { ProjectModel };

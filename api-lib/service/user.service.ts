@@ -1,18 +1,18 @@
-import { CollavatarUser, CollavatarUserDocument } from "@/api-lib/models/collavatarUser";
+import { UserModel, UserDocument } from "@/api-lib/models/userModel";
 import { FilterQuery, UpdateQuery, QueryOptions } from "mongoose";
 
 
 export const updateUser = async(
-  query: FilterQuery<CollavatarUserDocument>,
-  update: UpdateQuery<CollavatarUserDocument>,
+  query: FilterQuery<UserDocument>,
+  update: UpdateQuery<UserDocument>,
   options: QueryOptions = {}
 ) =>{
-    return CollavatarUser.findOneAndUpdate(query, update, options);
+    return UserModel.findOneAndUpdate(query, update, options);
 }
 
 export const findUser = async(
-  query: FilterQuery<CollavatarUserDocument>,
+  query: FilterQuery<UserDocument>,
   options: QueryOptions = { lean: true }
-): Promise<CollavatarUserDocument> =>{
-  return CollavatarUser.findOne(query, options);
+): Promise<UserDocument> =>{
+  return UserModel.findOne(query, options);
 }

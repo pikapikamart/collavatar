@@ -2,7 +2,7 @@ import GithubProvider from "next-auth/providers/github";
 import NextAuth, { User, Account, Profile, Session} from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { connectDatabase } from "@/api-lib/db";
-import { CollavatarUser } from "@/api-lib/models/collavatarUser";
+import { UserModel } from "@/api-lib/models/userModel";
 import { fetchGithubEmail } from "@/api-lib/utils";
 
 
@@ -34,12 +34,12 @@ const nextAuthCallbacks = {
   async signIn({ user, account, profile }: NextAuthCallbackSignInITF) {
     await connectDatabase(null, null, null);
 
-    const checkIfUserExist = await CollavatarUser.findOne({githubId: user.id});
+    const checkIfUserExist = await UserModel.findOne({githubId: user.id});
    
     if ( !checkIfUserExist ) {
       const githubEmail = account.access_token && await fetchGithubEmail(account.access_token);
       
-      const newCollavatarUser = {
+      const newUserModel = {
         githubId: user.id,
         githubEmail: githubEmail,
         githubAccessToken: account.access_token && account.access_token,
@@ -48,7 +48,7 @@ const nextAuthCallbacks = {
         userImage: user.image 
       }
 
-      await CollavatarUser.create(newCollavatarUser);
+      await UserModel.create(newUserModel);
     }
 
     return true;

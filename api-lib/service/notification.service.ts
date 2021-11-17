@@ -1,14 +1,14 @@
-import { RequestNotification, RequestNotificationDocument } from "@/api-lib/models/requestNotification"
-import { CollavatarUserDocument } from "@/api-lib/models/collavatarUser";
+import { NotificationDocument, NotificationModel } from "@/api-lib/models/notificationModel"
+import { UserDocument } from "@/api-lib/models/userModel";
 import { Error } from "mongoose";
 
 
 export const createProjectRequest = async(
-  requestBody: RequestNotificationDocument,
-  projectOwner: CollavatarUserDocument
+  requestBody: NotificationDocument,
+  projectOwner: UserDocument
 ) =>{
   try {
-    const notification: RequestNotificationDocument = await RequestNotification.create(requestBody);
+    const notification: NotificationDocument = await NotificationModel.create(requestBody);
     // Save notification to the project owner
     projectOwner.notifications?.push(notification._id);
     await projectOwner.save();

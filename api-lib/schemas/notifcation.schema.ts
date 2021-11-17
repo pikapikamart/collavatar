@@ -12,3 +12,7 @@ const payload = {
 export const createRequestSchema = yup.object({
   ...payload
 });
+
+export const createResponseSchema = yup.object({
+  ...payload
+})

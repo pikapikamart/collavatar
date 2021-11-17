@@ -2,13 +2,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getGithubIdSession, getProperty } from "@/api-lib/utils";
 import { findUser } from "@/api-lib/service/user.service";
 import { findProject } from "@/api-lib/service/project.service";
-import { createProjectRequest } from "@/api-lib/service/requestProject.service";
+import { createProjectRequest } from "@/api-lib/service/notification.service";
 import { validateError } from "@/api-lib/utils";
 
 
 interface RequestQuery {
-  projectId?: string,
-  userId?: string[]
+  projectId?: string[],
 }
 
 export const createProjectRequestHandler = async(
@@ -17,7 +16,7 @@ export const createProjectRequestHandler = async(
 ) =>{
   const githubId = await getGithubIdSession(req);
   const requestQuery: RequestQuery = req.query;
-  const userId = getProperty(requestQuery, "userId");
+  const projectId = getProperty(requestQuery, "projectId");
 
   try {
     if ( !githubId ) return res.status(401).send("User must be signed in.");
@@ -26,23 +25,20 @@ export const createProjectRequestHandler = async(
     
     if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 
-    const requestedProjectOwner = userId? await findUser({ githubId: userId[0] }, { lean: false }) : null;
-    
-    if ( !requestedProjectOwner ) return res.status(404).send("Project owner not found.");
-
-    if ( githubId===requestedProjectOwner.githubId ) return res.status(409).send("Cannot send request for the same user.");
-
-    const requestedProject = await findProject({ projectId: getProperty(requestQuery, "projectId") }, { lean: false });
+    const requestedProject = projectId? await findProject({ projectId: projectId[0] }, { lean: false }) : null;
 
     if ( !requestedProject ) return res.status(404).send("Project requested not found.");
 
+    const projectOwner = await findUser({ _id: requestedProject.projectOwner }, { lean: false });
+
     const requestInformation = {
+      requester: currentUser._id,
+      project: requestedProject._id,
       ...req.body,
       notificationType: "request",
-      requester: currentUser._id
     }
 
-    await createProjectRequest(requestInformation, requestedProjectOwner);
+    await createProjectRequest(requestInformation, projectOwner);
     
     return res.status(200).send("Request for project successful.");
   } catch( error ){

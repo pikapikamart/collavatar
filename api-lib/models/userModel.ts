@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { CollavatarProjectDocument } from "./collavatarProject";
-import { CollavatarNotificationDocument} from "./collavatarNotification";
+import { ProjectDocument } from "@/api-lib/models/projectModel";
+import { NotificationDocument } from "@/api-lib/models/notificationModel";
 
 
-export interface CollavatarUserDocument extends mongoose.Document {
+export interface UserDocument extends mongoose.Document {
   githubId: string,
   githubEmail: string,
   githubRepoLink: string,
@@ -13,12 +13,12 @@ export interface CollavatarUserDocument extends mongoose.Document {
   userImage: string,
   createdAt: Date,
   updatedAt: Date,
-  collaboratedProjects? : CollavatarProjectDocument["_id"][],
-  ownedProjects?: CollavatarProjectDocument["_id"][],
-  notifications?: CollavatarNotificationDocument["_id"][]
+  collaboratedProjects? : ProjectDocument["_id"][],
+  ownedProjects?: ProjectDocument["_id"][],
+  notifications?: NotificationDocument["_id"][]
 }
 
-const collavatarUserSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     githubId: {
       type: String,
@@ -55,19 +55,19 @@ const collavatarUserSchema = new mongoose.Schema(
     collaboratedProjects: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "CollavatarProject"
+        ref: "Project"
       }
     ],
     ownedProjects: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "CollavatarProject"
+        ref: "Project"
       }
     ],
     notifications: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "CollavatarNotification",
+        ref: "NotificationModel",
         default: []
       }
     ]
@@ -77,7 +77,7 @@ const collavatarUserSchema = new mongoose.Schema(
   }
 );
 
-const CollavatarUser = mongoose.models?.CollavatarUser || mongoose.model<CollavatarUserDocument>("CollavatarUser", collavatarUserSchema);
+const UserModel = mongoose.models?.User || mongoose.model<UserDocument>("User", userSchema);
 
 
-export { CollavatarUser };
+export { UserModel };

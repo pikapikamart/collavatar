@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { getProjects } from "@/api-lib/service/projects.service"
+import { validateError } from "@/api-lib/utils";
 
 
 export const getProjectsHandler = async( 
@@ -10,7 +11,7 @@ export const getProjectsHandler = async(
     const getProjectOptions = {
       projection: "-_id -projectMembers",
       populationPath: "projectOwner",
-      populationMembers: "username userImage userBio -_id",
+      populationMembers: "username userImage userBio githubId -_id",
       options: { lean: true }
     };
     const collavProjects = await getProjects(
@@ -18,9 +19,9 @@ export const getProjectsHandler = async(
       getProjectOptions.populationPath,
       getProjectOptions.populationMembers,
       getProjectOptions.options);
-
-    return res.status(200).json(collavProjects);
-  } catch( error ) {
     
+      return res.status(200).json(collavProjects);
+  } catch( error ) {
+    validateError(error, 400, res);
   }
 }
