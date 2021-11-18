@@ -4,7 +4,8 @@ import { ProjectDocument } from "@/api-lib/models/projectModel";
 
 
 export interface NotificationDocument extends mongoose.Document {
-  requester: UserDocument["_id"],
+  requester?: UserDocument["_id"],
+  responder?: UserDocument["_id"],
   project?: ProjectDocument["_id"],
   notificationType: string,
   position: string,
@@ -19,8 +20,11 @@ export interface NotificationDocument extends mongoose.Document {
 const notificationSchema = new mongoose.Schema({
   requester: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
+    ref: "User"
+  },
+  responder: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
   },
   project: {
     type: mongoose.Schema.Types.ObjectId,

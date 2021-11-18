@@ -3,8 +3,9 @@ import { getGithubIdSession, getProperty } from "@/api-lib/utils";
 import { findUser } from "@/api-lib/service/user.service";
 import { findProject } from "@/api-lib/service/project.service";
 import { nanoid } from "nanoid";
-import { findProjectRequest, createProjectRequest } from "@/api-lib/service/notification.service";
+import { findProjectRequest, createProjectRequest, createProjectResponse } from "@/api-lib/service/notification.service";
 import { validateError } from "@/api-lib/utils";
+import { NotificationDocument } from "../models/notificationModel";
 
 
 interface RequestQuery {
@@ -31,8 +32,7 @@ export const createProjectRequestHandler = async(
     if ( !requestedProject ) return res.status(404).send("Project requested not found.");
 
     const projectOwner = await findUser({ _id: requestedProject.projectOwner }, { lean: false });
-    
-    const checkNotificationExistence =  await findProjectRequest(projectOwner, currentUser);
+    const checkNotificationExistence =  await findProjectRequest(projectOwner, currentUser, requestedProject);
 
     if ( checkNotificationExistence && !checkNotificationExistence.responded ) return res.status(409).send("Request to project already created. Wait for response.");
 
@@ -53,23 +53,9 @@ export const createProjectRequestHandler = async(
   } 
 }
 
-
-// Update existing request notification
-// 0. Get the notification item from the collection
-// 1. Put either true or false in the accepted
-// 2. Put true on the responded
-
-// Creating response notification
-// 1. Use "response" in the requestType
-// 2. True of False in the accepted
-
-// Updating ProjectOwner
-
-// Updateing RequestedProject
-
 interface ResponseQuery {
-  projectId?: string[],
-  requestId?: string
+  requesterId?: string[],
+  projectId?: string
 }
 
 export const respondProjectRequest = async(
@@ -78,6 +64,7 @@ export const respondProjectRequest = async(
 ) =>{
   const githubId = await getGithubIdSession(req);
   const responseQuery: ResponseQuery = req.query;
+  const requesterId = getProperty(responseQuery, "requesterId");
   const projectId = getProperty(responseQuery, "projectId");
   
   try {
@@ -87,8 +74,32 @@ export const respondProjectRequest = async(
     
     if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 
+    const requestedProject = projectId? await findProject({ projectId: projectId }, { lean: false }) : null;
+    console.log(requestedProject);
+    if ( !requestedProject ) return res.status(404).send("Can't respond to missing project.");
 
-  } catch( error ) {
+    const requester = requesterId? await findUser({ githubId: requesterId[0] }, { lean: false }) : null;
+
+    if ( !requester ) return res.status(404).send("Requester to project not found.");
+
+    const requestNotification = await findProjectRequest(currentUser, requester, requestedProject);
+
+    if ( !requestNotification ) return res.status(404).send("Project request not found. Can't respond.");
+
+    if ( requestNotification.responded ) return res.status(400).send("Already responded to request.");
+
+    const responseInformation: NotificationDocument = {
+      responder: currentUser._id,
+      project: requestedProject._id,
+      ...req.body,
+      notificationType: "response",
+      notificationId: nanoid(15)
+    }
+
+    await createProjectResponse(responseInformation, requester);
+
+    return res.status(200).send("Response to project request created.");
+   } catch( error ) {
     validateError(error, 400, res);
   }
 }

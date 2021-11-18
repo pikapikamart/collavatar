@@ -14,5 +14,9 @@ export const createRequestSchema = yup.object({
 });
 
 export const createResponseSchema = yup.object({
-  ...payload
+  body: yup.object({
+    position: yup.string(),
+    message: yup.string().required("Message for owner is required."),
+    accepted: yup.boolean().required("Accept or Reject needed.")
+  })
 })

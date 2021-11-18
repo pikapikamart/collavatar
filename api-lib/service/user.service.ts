@@ -1,5 +1,5 @@
-import { UserModel, UserDocument } from "@/api-lib/models/userModel";
 import { FilterQuery, UpdateQuery, QueryOptions } from "mongoose";
+import { UserModel, UserDocument } from "@/api-lib/models/userModel";
 
 
 export const updateUser = async(

@@ -41,16 +41,4 @@ export const createProjectHandler = async(
   }
 }
 
-export const updateProjectHandler = async(
-  req: NextApiRequest,
-  res: NextApiResponse
-) =>{
-  const githubId = await getGithubIdSession(req);
-
-  try {
-
-  } catch( error ){
-    
-  }
-}
 

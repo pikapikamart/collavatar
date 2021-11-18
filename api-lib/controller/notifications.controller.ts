@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getGithubIdSession, validateError } from "@/api-lib/utils";
 import { findUser } from "@/api-lib/service/user.service";
+import { NotificationModel } from "@/api-lib/models/notificationModel";
 
 
 export const getNotificationsHandler = async(
@@ -20,13 +21,18 @@ export const getNotificationsHandler = async(
       populationPath: "notifications",
       populationMembers: "-_id username githubId"
     }
+    
     await currentUser.populate({
       path: notificationsOptions.populationPath,
       populate: {
-        path: "requester",
-        select: notificationsOptions.populationMembers
+        path: "requester responder",
+        select: notificationsOptions.populationMembers,
+        model: "User"
       }
     });
+    console.log(currentUser);
+
+    // await currentUser.populate("notifications");
 
     return res.status(200).json(currentUser.notifications);
   } catch( error ){
