@@ -1,7 +1,8 @@
-import { getSession } from "next-auth/react";
 import { NextApiRequest, NextApiResponse } from "next"
+import { getSession } from "next-auth/react";
 import { ValidationError } from "yup";
 import { Error } from "mongoose";
+import { findUser } from "@/api-lib/service/user.service";
 
 
 interface GithubEmail {
@@ -11,6 +12,10 @@ interface GithubEmail {
   visibility: null | string
 }
 
+export function getProperty<Type, Key extends keyof Type>(object: Type, key: Key): Type[Key] {
+  return object[key];
+}
+
 export const fetchGithubEmail = async( accessToken: string ) =>{
   const githubEmail = await fetch("https://api.github.com/user/emails", {
       headers: {
@@ -18,26 +23,39 @@ export const fetchGithubEmail = async( accessToken: string ) =>{
       }
     });
   
-  const processedEmail = await githubEmail.json();
-  const primaryEmail: GithubEmail = processedEmail.find(( email: GithubEmail) => email.primary);
+  const processedEmail: GithubEmail[] = await githubEmail.json();
+  const primaryEmail = processedEmail.find(( email: GithubEmail) => email.primary);
 
-  return primaryEmail.email;
+  return primaryEmail? primaryEmail.email : "";
 }
 
-export const getGithubIdSession = async (req: NextApiRequest) =>{
+interface UserSession {
+  name?: string | null
+  email?: string | null
+  image?: string | null,
+  githubId?: string
+}
+
+export const getGithubId = async (req: NextApiRequest) =>{
   const userSession = await getSession({ req });
 
-  if ( userSession && userSession.user ) {
-    const githubId = userSession.user["githubId" as keyof typeof userSession.user];
+  if ( !userSession || !userSession.user ) return "";
 
-    return githubId;
-  }
+  const user: UserSession = userSession.user;
+  const githubId = getProperty(user, "githubId");
 
-  return null;
+  return githubId;
 }
 
-export function getProperty<Type, Key extends keyof Type>(object: Type, key: Key): Type[Key] {
-  return object[key];
+export const getCurrentUser = async(
+  githubId: string, 
+  res: NextApiResponse
+)=>{
+  const currentUser = await findUser({ githubId }, { lean: false });
+
+  if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+
+  return currentUser;
 }
 
 export const validateError = (

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { getProjects } from "@/api-lib/service/projects.service"
 import { validateError } from "@/api-lib/utils";
-import { getGithubIdSession } from "@/api-lib/utils";
+import { getGithubId } from "@/api-lib/utils";
 import { findUser } from "@/api-lib/service/user.service";
 
 
@@ -32,7 +32,7 @@ export const getOwnedProjects = async(
   req: NextApiRequest,
   res: NextApiResponse
 ) =>{
-  const githubId = await getGithubIdSession(req);
+  const githubId = await getGithubId(req);
 
   try {
     if ( !githubId ) return res.status(401).send("User must be signed in.");

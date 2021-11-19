@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getGithubIdSession, validateError } from "@/api-lib/utils";
+import { getGithubId, validateError } from "@/api-lib/utils";
 import { findUser } from "@/api-lib/service/user.service";
 import { NotificationModel } from "@/api-lib/models/notificationModel";
 
@@ -8,7 +8,7 @@ export const getNotificationsHandler = async(
   req: NextApiRequest,
   res: NextApiResponse
 ) =>{
-  const githubId = await getGithubIdSession(req);
+  const githubId = await getGithubId(req);
 
   try {
     if ( !githubId ) return res.status(401).send("User must be signed in.");

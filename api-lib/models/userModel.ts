@@ -11,11 +11,11 @@ export interface UserDocument extends mongoose.Document {
   username: string,
   userBio?: string,
   userImage: string,
-  createdAt: Date,
-  updatedAt: Date,
-  collaboratedProjects? : ProjectDocument["_id"][],
+  collaboratedProjects?: ProjectDocument["_id"][],
   ownedProjects?: ProjectDocument["_id"][],
   notifications?: NotificationDocument["_id"][]
+  updatedAt?: Date,
+  createdAt?: Date,
 }
 
 const userSchema = new mongoose.Schema(

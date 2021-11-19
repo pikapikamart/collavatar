@@ -8,6 +8,7 @@ const handler = nc();
 
 handler.use(connectDatabase);
 
+// Update existing project
 handler.patch(verifyUser)
 
 

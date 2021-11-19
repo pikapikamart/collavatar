@@ -10,9 +10,8 @@ const handler = nc();
 
 handler.use(connectDatabase);
 
-// project creation
+// Create project
 handler.post(verifyUser, validateRequest(createProjectSchema), createProjectHandler);
-// edit project
 
 
 export default handler;

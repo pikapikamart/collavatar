@@ -8,9 +8,8 @@ const handler = nc();
 
 handler.use(connectDatabase);
 
+// Update user information
 handler.patch(verifyUser, updateUserHandler);
-
-// handle delete account
 
 
 export default handler;

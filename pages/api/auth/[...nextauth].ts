@@ -2,17 +2,23 @@ import GithubProvider from "next-auth/providers/github";
 import NextAuth, { User, Account, Profile, Session} from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { connectDatabase } from "@/api-lib/db";
-import { UserModel } from "@/api-lib/models/userModel";
+import { findUser, createUser } from "@/api-lib/service/user.service";
 import { fetchGithubEmail } from "@/api-lib/utils";
+import { getProperty } from "@/api-lib/utils";
 
 
-interface NextAuthCallbackSignInITF {
-  user: User,
-  account: Account,
-  profile: Profile
+
+interface NextProfile extends Profile {
+  html_url?: string
 }
 
-interface NextAuthCallbackSessionITF {
+interface NextCallbackSignIn {
+  user: User,
+  account: Account,
+  profile: NextProfile
+}
+
+interface NextCallbackSession {
   session: Session,
   user: User,
   token: JWT
@@ -31,30 +37,37 @@ const nextAuthProviders = [
 ];
 
 const nextAuthCallbacks = {
-  async signIn({ user, account, profile }: NextAuthCallbackSignInITF) {
+  async signIn({ user, account, profile }: NextCallbackSignIn) {
     await connectDatabase(null, null, null);
 
-    const checkIfUserExist = await UserModel.findOne({githubId: user.id});
+    const checkUserExistence = await findUser({ githubId: user.id }, { lean: false });
    
-    if ( !checkIfUserExist ) {
-      const githubEmail = account.access_token && await fetchGithubEmail(account.access_token);
+    if ( !checkUserExistence ) {
+      const githubRepoLink = getProperty(profile, "html_url");
+
+      if ( !account.access_token ||
+            !user.name ||
+            !user.image ||
+            !githubRepoLink ) return false;
+
+      const githubEmail = await fetchGithubEmail(account.access_token);
       
       const newUserModel = {
         githubId: user.id,
         githubEmail: githubEmail,
-        githubAccessToken: account.access_token && account.access_token,
-        githubRepoLink: profile["html_url" as keyof typeof profile], 
+        githubRepoLink: githubRepoLink, 
+        githubAccessToken: account.access_token,
         username: user.name,
-        userImage: user.image 
+        userImage: user.image
       }
 
-      await UserModel.create(newUserModel);
+      await createUser(newUserModel);
     }
 
     return true;
   },
-  async session({ session, user, token } : NextAuthCallbackSessionITF) {
-
+  async session({ session, user, token } : NextCallbackSession) {
+    
     const newSession = {
       ...session,
       user: {

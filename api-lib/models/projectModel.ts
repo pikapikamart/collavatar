@@ -16,8 +16,8 @@ export interface ProjectDocument extends mongoose.Document {
   projectDescription: string
   projectStatus: string,
   projectId: string,
-  projectOwner?: UserDocument["_id"],
-  projectMembers?: UserDocument["_id"][],
+  projectOwner: UserDocument["_id"],
+  projectMembers: UserDocument["_id"][],
   createdAt: Date,
   updatedAt: Date
 }

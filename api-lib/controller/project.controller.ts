@@ -1,41 +1,38 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getGithubIdSession } from "@/api-lib/utils";
-import { findUser } from "@/api-lib/service/user.service";
-import { ProjectDocument } from "@/api-lib/models/projectModel";
+import { getGithubId, validateError, getCurrentUser } from "@/api-lib/utils";
+import { updateUser } from "@/api-lib/service/user.service";
 import { nanoid } from "nanoid";
 import { createProject, findProject } from "@/api-lib/service/project.service";
-import { validateError } from "@/api-lib/utils";
 
 
 export const createProjectHandler = async(
   req: NextApiRequest,
   res: NextApiResponse
 ) =>{
-  const githubId = await getGithubIdSession(req);
+  const githubId = await getGithubId(req);
 
   try {
-    if ( !githubId ) return res.status(401).send("User must be signed in.");
+    const currentUser = githubId? await getCurrentUser(githubId, res) : null;
 
-    const currentUser = await findUser({ githubId }, { lean: false });
+    if ( currentUser ) {
+      const newCollavProject = {
+        ...req.body,
+        projectId: nanoid(15),
+        projectStatus: "Ongoing",
+        projectOwner: currentUser._id,
+        projectMembers: [currentUser._id]
+      };
   
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
-    
-    const newCollavProject: ProjectDocument = {
-      ...req.body,
-      projectId: nanoid(15),
-      projectStatus: "Ongoing",
-      projectOwner: currentUser._id,
-      projectMembers: [currentUser._id]
-    };
-
-    const checkProjectExistence = await findProject({ projectName: newCollavProject.projectName });
-
-    if ( checkProjectExistence ) return res.status(409).send("Project already existed.");
-
-    await createProject(newCollavProject, currentUser);
-    
-    return res.status(200).send("Project is successfully created.");
-
+      const checkProjectExistence = await findProject({ projectName: newCollavProject.projectName });
+  
+      if ( checkProjectExistence ) return res.status(409).send("Project already existed.");
+  
+      const createdProject = await createProject(newCollavProject);
+      
+      await updateUser({ githubId: currentUser.githubId }, { $push: { ownedProjects: createdProject._id}})
+  
+      return res.status(200).send("Project is successfully created.");
+    }
   } catch( error ) {
     validateError(error, 400, res)
   }

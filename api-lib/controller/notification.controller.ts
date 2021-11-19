@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getGithubIdSession, getProperty } from "@/api-lib/utils";
+import { getGithubId, getProperty } from "@/api-lib/utils";
 import { findUser } from "@/api-lib/service/user.service";
 import { findProject } from "@/api-lib/service/project.service";
 import { nanoid } from "nanoid";
@@ -16,7 +16,7 @@ export const createProjectRequestHandler = async(
   req: NextApiRequest,
   res: NextApiResponse
 ) =>{
-  const githubId = await getGithubIdSession(req);
+  const githubId = await getGithubId(req);
   const requestQuery: RequestQuery = req.query;
   const projectId = getProperty(requestQuery, "projectId");
 
@@ -62,7 +62,7 @@ export const respondProjectRequest = async(
   req: NextApiRequest,
   res: NextApiResponse
 ) =>{
-  const githubId = await getGithubIdSession(req);
+  const githubId = await getGithubId(req);
   const responseQuery: ResponseQuery = req.query;
   const requesterId = getProperty(responseQuery, "requesterId");
   const projectId = getProperty(responseQuery, "projectId");
