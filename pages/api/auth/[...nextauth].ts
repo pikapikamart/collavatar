@@ -3,7 +3,8 @@ import NextAuth, { User, Account, Profile, Session} from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { connectDatabase } from "@/api-lib/db";
 import { findUser, createUser } from "@/api-lib/service/user.service";
-import { fetchGithubEmail, getProperty } from "@/api-lib/utils";
+import { getProperty } from "@/api-lib/utils";
+import { fetchGithubEmail } from "@/api-lib/utils/github";
 
 
 interface NextProfile extends Profile {
