@@ -1,7 +1,6 @@
+import "@/api-lib/models/notificationModel";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getGithubId, validateError } from "@/api-lib/utils";
-import { findUser } from "@/api-lib/service/user.service";
-import { NotificationModel } from "@/api-lib/models/notificationModel";
+import { getCurrentUser, getGithubId, validateError } from "@/api-lib/utils";
 
 
 export const getNotificationsHandler = async(
@@ -11,30 +10,24 @@ export const getNotificationsHandler = async(
   const githubId = await getGithubId(req);
 
   try {
-    if ( !githubId ) return res.status(401).send("User must be signed in.");
-    
-    const currentUser = await findUser({ githubId }, { lean: false });
+    const currentUser = githubId? await getCurrentUser(githubId, res) : null;
 
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly");
-
-    const notificationsOptions = {
-      populationPath: "notifications",
-      populationMembers: "-_id username githubId"
-    }
-    
-    await currentUser.populate({
-      path: notificationsOptions.populationPath,
-      populate: {
-        path: "requester responder",
-        select: notificationsOptions.populationMembers,
-        model: "User"
+    if ( currentUser ){
+      const notificationsOptions = {
+        populationPath: "notifications",
+        populationMembers: "-_id username githubId"
       }
-    });
-    console.log(currentUser);
+      
+      await currentUser.populate({
+        path: notificationsOptions.populationPath,
+        populate: {
+          path: "requester responder",
+          select: notificationsOptions.populationMembers
+        }
+      });
 
-    // await currentUser.populate("notifications");
-
-    return res.status(200).json(currentUser.notifications);
+      return res.status(200).json(currentUser.notifications);      
+    }
   } catch( error ){
     validateError(error, 400, res);
   }

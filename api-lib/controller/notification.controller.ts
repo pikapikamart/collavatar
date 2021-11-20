@@ -1,15 +1,21 @@
+import "@/api-lib/models/notificationModel";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getGithubId, getProperty } from "@/api-lib/utils";
-import { findUser } from "@/api-lib/service/user.service";
-import { findProject } from "@/api-lib/service/project.service";
 import { nanoid } from "nanoid";
-import { findProjectRequest, createProjectRequest, createProjectResponse } from "@/api-lib/service/notification.service";
-import { validateError } from "@/api-lib/utils";
-import { NotificationDocument } from "../models/notificationModel";
+import { getGithubId, 
+  getCurrentUser, 
+  getProperty, 
+  validateError } from "@/api-lib/utils";
+import { findUser, updateUser } from "@/api-lib/service/user.service";
+import { findProject, updateProject } from "@/api-lib/service/project.service";
+import { findProjectRequestFromUser, 
+  findProjectRequest, 
+  createProjectRequest, 
+  createProjectResponse, 
+  updateProjectRequest } from "@/api-lib/service/notification.service";
 
 
 interface RequestQuery {
-  projectId?: string[],
+  projectId?: string,
 }
 
 export const createProjectRequestHandler = async(
@@ -21,84 +27,98 @@ export const createProjectRequestHandler = async(
   const projectId = getProperty(requestQuery, "projectId");
 
   try {
-    if ( !githubId ) return res.status(401).send("User must be signed in.");
+    const currentUser = githubId? await getCurrentUser(githubId, res) : null;
 
-    const currentUser = await findUser({ githubId }, { lean: false });
-    
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+    if ( currentUser ) {
+      const requestedProject = projectId? await findProject({ projectId }, { lean: false }) : null;
+  
+      if ( !requestedProject ) return res.status(404).send("Project requested not found.");
 
-    const requestedProject = projectId? await findProject({ projectId: projectId[0] }, { lean: false }) : null;
+      if ( requestedProject.projectOwner.equals(currentUser._id ) ) return res.status(409).send("Can't send request to owned project.");
 
-    if ( !requestedProject ) return res.status(404).send("Project requested not found.");
-
-    const projectOwner = await findUser({ _id: requestedProject.projectOwner }, { lean: false });
-    const checkNotificationExistence =  await findProjectRequest(projectOwner, currentUser, requestedProject);
-
-    if ( checkNotificationExistence && !checkNotificationExistence.responded ) return res.status(409).send("Request to project already created. Wait for response.");
-
-    const requestInformation = {
-      requester: currentUser._id,
-      project: requestedProject._id,
-      ...req.body,
-      notificationType: "request",
-      responded: false,
-      notificationId: nanoid(15)
+      const projectOwner = await findUser({ _id: requestedProject.projectOwner }, { lean: false });
+      const checkNotificationExistence =  await findProjectRequestFromUser(projectOwner, currentUser, requestedProject);
+      
+      if ( checkNotificationExistence &&
+         !checkNotificationExistence.responded ) return res.status(409).send("Request to project already created. Wait for response.");
+  
+      const requestInformation = {
+        ...req.body,
+        requester: currentUser._id,
+        project: requestedProject._id,
+        notificationType: "request",
+        responded: false,
+        notificationId: nanoid(15)
+      }
+  
+      const createdRequest = await createProjectRequest(requestInformation);
+      
+      await updateUser({_id: projectOwner._id}, {$push: { notifications: createdRequest._id }});
+      
+      return res.status(200).send("Request for project successful.");
     }
-
-    await createProjectRequest(requestInformation, projectOwner);
-    
-    return res.status(200).send("Request for project successful.");
   } catch( error ){
     validateError(error, 400, res);
   } 
 }
 
 interface ResponseQuery {
-  requesterId?: string[],
-  projectId?: string
+  notificationId?: string
 }
 
-export const respondProjectRequest = async(
+interface ResponseBody {
+  accepted: boolean,
+  message: string
+}
+
+export const respondProjectRequestHandler = async(
   req: NextApiRequest,
   res: NextApiResponse
 ) =>{
   const githubId = await getGithubId(req);
   const responseQuery: ResponseQuery = req.query;
-  const requesterId = getProperty(responseQuery, "requesterId");
-  const projectId = getProperty(responseQuery, "projectId");
-  
+  const notificationId = getProperty(responseQuery, "notificationId");
+  const responseBody: ResponseBody = {...req.body};
+
   try {
-    if ( !githubId ) return res.status(401).send("User must be signed in.");
+    const currentUser = githubId? await getCurrentUser(githubId, res) : null;
 
-    const currentUser = await findUser({ githubId }, { lean: false });
-    
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+    if ( currentUser ) {
+      const requestNotification = notificationId? await findProjectRequest({ notificationId }, { lean: false } ) : null;
 
-    const requestedProject = projectId? await findProject({ projectId: projectId }, { lean: false }) : null;
-    console.log(requestedProject);
-    if ( !requestedProject ) return res.status(404).send("Can't respond to missing project.");
+      if ( !requestNotification ) return res.status(404).send("Project request not found. Can't respond");
 
-    const requester = requesterId? await findUser({ githubId: requesterId[0] }, { lean: false }) : null;
+      if ( requestNotification.responded ) return res.status(409).send("Already responded to request.");
+      
+      await currentUser.populate("notifications");
 
-    if ( !requester ) return res.status(404).send("Requester to project not found.");
+      const checkNotificationExistenceInUser = currentUser.notifications?.find(notif =>notif.requester.equals(requestNotification.requester));
+      
+      if ( !checkNotificationExistenceInUser ) return res.status(403).send("Can't respond to not owned project request.");
 
-    const requestNotification = await findProjectRequest(currentUser, requester, requestedProject);
+      const responseInformation = {
+        ...responseBody,
+        responder: currentUser._id,
+        project: requestNotification.project,
+        notificationType: "response",
+        position: requestNotification.position,
+      }
 
-    if ( !requestNotification ) return res.status(404).send("Project request not found. Can't respond.");
+      const updatedRequestInformation = {
+        accepted: responseBody.accepted,
+        responded: true
+      }
 
-    if ( requestNotification.responded ) return res.status(400).send("Already responded to request.");
+      await updateProjectRequest({ notificationId: requestNotification.notificationId }, updatedRequestInformation);
 
-    const responseInformation: NotificationDocument = {
-      responder: currentUser._id,
-      project: requestedProject._id,
-      ...req.body,
-      notificationType: "response",
-      notificationId: nanoid(15)
+      const responseNotification = await createProjectResponse(responseInformation);
+
+      await updateUser({_id: requestNotification.requester}, { $push: { notifications: responseNotification._id}});
+
+      await updateProject({_id: requestNotification.project}, {$push: {projectMembers: requestNotification.requester}});
+
+      return res.status(200).send("Responded successfully.");
     }
-
-    await createProjectResponse(responseInformation, requester);
-
-    return res.status(200).send("Response to project request created.");
    } catch( error ) {
     validateError(error, 400, res);
   }

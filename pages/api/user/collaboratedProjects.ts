@@ -8,7 +8,7 @@ const handler = nc();
 
 handler.use(connectDatabase);
 
-handler.get(verifyUser, getUserProjects(userProjectSelections.owned));
+handler.get(verifyUser, getUserProjects(userProjectSelections.collaborated));
 
 
 export default handler;

@@ -1,11 +1,11 @@
-import { FilterQuery, QueryOptions, DocumentDefinition } from "mongoose";
+import { FilterQuery, QueryOptions, DocumentDefinition, UpdateQuery } from "mongoose";
 import { ProjectModel, ProjectDocument } from "@/api-lib/models/projectModel";
 
 
 export const createProject = async(
   projectInfo: DocumentDefinition<ProjectDocument>
 ): Promise<ProjectDocument> =>(
-    await ProjectModel.create(projectInfo)
+  ProjectModel.create(projectInfo)
 )
 
 export const findProject = async(
@@ -14,3 +14,10 @@ export const findProject = async(
 ): Promise<ProjectDocument> =>(
   ProjectModel.findOne(query, options)
 )
+
+export const updateProject = async(
+  query: FilterQuery<ProjectDocument>,
+  update: UpdateQuery<ProjectDocument>
+) =>{
+  await ProjectModel.findOneAndUpdate(query, update);
+}

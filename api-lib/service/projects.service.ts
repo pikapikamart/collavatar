@@ -6,10 +6,7 @@ export const getProjects = async (
   projection: string, 
   populationPath: string, 
   populationMember: string,
-  options: QueryOptions={lean: false}
-) =>{
-  const collavatarProjects: ProjectDocument[] =  await ProjectModel.find({}, projection, options)
-  .populate(populationPath, populationMember);
-  
-  return collavatarProjects;
-}
+  options: QueryOptions={ lean: true }
+): Promise<ProjectDocument[]> =>(
+  ProjectModel.find({}, projection, options).populate(populationPath, populationMember)
+)

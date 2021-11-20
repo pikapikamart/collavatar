@@ -64,13 +64,14 @@ export const validateError = (
   res: NextApiResponse
 ) =>{
   if ( error instanceof ValidationError ) {
-    console.log(error.errors);
+    console.log(error);
     return res.status(httpStatus).send(error.errors)
   } 
   if ( error instanceof Error ) {
-    console.log(error.message);
+    console.log(error);
     return res.status(httpStatus).send(error.message);
   } else {
+    console.log(error);
     return res.status(500).send("Server error. Please try again later.");
   }
 }

@@ -1,11 +1,37 @@
-import { NextApiRequest, NextApiResponse } from "next"
-import { getProjects } from "@/api-lib/service/projects.service"
-import { validateError } from "@/api-lib/utils";
-import { getGithubId } from "@/api-lib/utils";
-import { findUser } from "@/api-lib/service/user.service";
+import "@/api-lib/models/projectModel";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getProjects } from "@/api-lib/service/projects.service";
+import { getGithubId, validateError, getCurrentUser } from "@/api-lib/utils";
 
 
-export const getProjectsHandler = async( 
+export const userProjectSelections = {
+  collaborated: "collaboratedProjects",
+  owned: "ownedProjects"
+}
+
+export const getUserProjects = (projectType: string) => async(
+  req: NextApiRequest,
+  res: NextApiResponse
+) =>{
+  const githubId = await getGithubId(req);
+  
+  try {
+    const currentUser = githubId? await getCurrentUser(githubId, res) : null;
+
+    if ( currentUser ){
+      if ( projectType==="ownedProjects"){} await currentUser.populate("ownedProjects");
+  
+      if ( projectType==="collaboratedProjects") await currentUser.populate("collaboratedProjects");
+      
+  
+      return res.status(200).json(currentUser.get(projectType));
+    }
+  } catch( error ) {
+    validateError(error, 400, res);
+  }
+}
+
+export const getAllProjectsHandler = async( 
   req: NextApiRequest, 
   res: NextApiResponse 
 ) =>{
@@ -13,14 +39,12 @@ export const getProjectsHandler = async(
     const getProjectOptions = {
       projection: "-_id -projectMembers",
       populationPath: "projectOwner",
-      populationMembers: "username userImage userBio githubId -_id",
-      options: { lean: true }
+      populationMembers: "username userImage userBio githubId -_id"
     };
     const collavProjects = await getProjects(
       getProjectOptions.projection,
       getProjectOptions.populationPath,
-      getProjectOptions.populationMembers,
-      getProjectOptions.options);
+      getProjectOptions.populationMembers);
     
       return res.status(200).json(collavProjects);
   } catch( error ) {
@@ -28,23 +52,3 @@ export const getProjectsHandler = async(
   }
 }
 
-export const getOwnedProjects = async(
-  req: NextApiRequest,
-  res: NextApiResponse
-) =>{
-  const githubId = await getGithubId(req);
-
-  try {
-    if ( !githubId ) return res.status(401).send("User must be signed in.");
-
-    const currentUser = await findUser({ githubId }, { lean: false });
-  
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
- 
-    await currentUser.populate("ownedProjects");
-
-    return res.status(200).json(currentUser.ownedProjects);
-  } catch( error ){
-    
-  }
-}
