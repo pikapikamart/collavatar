@@ -9,7 +9,7 @@ export const verifyUser = async (
   next: NextHandler
 ) =>{
   const userSession = await getSession({ req });
-
+  
   if ( userSession && userSession.user ) {
     return next();
   }

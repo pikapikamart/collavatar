@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getGithubId, validateError, getCurrentUser } from "@/api-lib/utils";
-import { updateUser,findUser } from "@/api-lib/service/user.service";
+import { getGithubId } from "@/api-lib/utils/github";
+import { validateError, getCurrentUser } from "@/api-lib/utils";
+import { updateUser } from "@/api-lib/service/user.service";
 import { cloudinary } from "@/api-lib/utils/cloudinary";
 
 

@@ -1,6 +1,7 @@
 import "@/api-lib/models/notificationModel";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getCurrentUser, getGithubId, validateError } from "@/api-lib/utils";
+import { getGithubId } from "@/api-lib/utils/github";
+import { getCurrentUser, validateError } from "@/api-lib/utils";
 
 
 export const getNotificationsHandler = async(

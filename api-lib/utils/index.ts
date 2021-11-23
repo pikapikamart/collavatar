@@ -1,5 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next"
-import { getSession } from "next-auth/react";
+import { NextApiResponse } from "next"
 import { ValidationError } from "yup";
 import { Error } from "mongoose";
 import { findUser } from "@/api-lib/service/user.service";
@@ -9,30 +8,12 @@ export function getProperty<Type, Key extends keyof Type>(object: Type, key: Key
   return object[key];
 }
 
-interface UserSession {
-  name?: string | null
-  email?: string | null
-  image?: string | null,
-  githubId?: string
-}
-
-export const getGithubId = async (req: NextApiRequest) =>{
-  const userSession = await getSession({ req });
-
-  if ( !userSession || !userSession.user ) return "";
-
-  const user: UserSession = userSession.user;
-  const githubId = getProperty(user, "githubId");
-
-  return githubId;
-}
-
 export const getCurrentUser = async(
   githubId: string, 
   res: NextApiResponse
 )=>{
   const currentUser = await findUser({ githubId }, { lean: false });
-
+  
   if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 
   return currentUser;

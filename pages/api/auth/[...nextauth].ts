@@ -29,7 +29,7 @@ const nextAuthProviders = [
     clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     authorization: {
       params: {
-        scope: "user, notifications, repo:invite"
+        scope: "user:email, notifications, repo"
       }
     }
   })
@@ -50,12 +50,13 @@ const nextAuthCallbacks = {
             !githubRepoLink ) return false;
 
       const githubEmail = await fetchGithubEmail(account.access_token);
-      
+
       const newUserModel = {
         githubId: user.id,
         githubEmail: githubEmail,
         githubRepoLink: githubRepoLink, 
         githubAccessToken: account.access_token,
+        githubUsername: user.name,
         username: user.name,
         userImage: user.image
       }

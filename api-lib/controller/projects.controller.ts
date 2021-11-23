@@ -1,7 +1,8 @@
 import "@/api-lib/models/projectModel";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getProjects } from "@/api-lib/service/projects.service";
-import { getGithubId, validateError, getCurrentUser } from "@/api-lib/utils";
+import { getGithubId } from "@/api-lib/utils/github";
+import { validateError, getCurrentUser } from "@/api-lib/utils";
 
 
 export const userProjectSelections = {

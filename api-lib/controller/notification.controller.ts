@@ -1,10 +1,8 @@
 import "@/api-lib/models/notificationModel";
 import { NextApiRequest, NextApiResponse } from "next";
 import { nanoid } from "nanoid";
-import { getGithubId, 
-  getCurrentUser, 
-  getProperty, 
-  validateError } from "@/api-lib/utils";
+import { acceptGithubUserInvite, getGithubId, sendGithubUserInvite } from "@/api-lib/utils/github";
+import { getCurrentUser, getProperty, validateError } from "@/api-lib/utils";
 import { findUser, updateUser } from "@/api-lib/service/user.service";
 import { findProject, updateProject } from "@/api-lib/service/project.service";
 import { findProjectRequestFromUser, 
@@ -36,6 +34,10 @@ export const createProjectRequestHandler = async(
 
       if ( requestedProject.projectOwner.equals(currentUser._id ) ) return res.status(409).send("Can't send request to owned project.");
 
+      const checkUserIfAlreadyMember = requestedProject.projectMembers.find(member => member.equals(currentUser._id));
+
+      if ( checkUserIfAlreadyMember ) return res.status(409).send("Already a member to requested project");
+
       const projectOwner = await findUser({ _id: requestedProject.projectOwner }, { lean: false });
       const checkNotificationExistence =  await findProjectRequestFromUser(projectOwner, currentUser, requestedProject);
       
@@ -55,7 +57,7 @@ export const createProjectRequestHandler = async(
       
       await updateUser({_id: projectOwner._id}, {$push: { notifications: createdRequest._id }});
       
-      return res.status(200).send("Request for project successful.");
+      return res.status(201).send("Request for project successful.");
     }
   } catch( error ){
     validateError(error, 400, res);
@@ -109,15 +111,28 @@ export const respondProjectRequestHandler = async(
         responded: true
       }
 
+      await requestNotification.populate("requester project");
+
+      const githubInviteInformation = {
+        username: requestNotification.requester.githubUsername,
+        repo: requestNotification.project.projectName
+      }
+
+      const githubInviteId = await sendGithubUserInvite(currentUser, githubInviteInformation);
+
+      // Send github collaborator request
+      await acceptGithubUserInvite(requestNotification.requester, githubInviteId);
+
+      // Accept the github request from above
       await updateProjectRequest({ notificationId: requestNotification.notificationId }, updatedRequestInformation);
 
       const responseNotification = await createProjectResponse(responseInformation);
 
-      await updateUser({_id: requestNotification.requester}, { $push: { notifications: responseNotification._id}});
+      await updateUser({_id: requestNotification.requester._id}, { $push: { notifications: responseNotification._id}});
 
-      await updateProject({_id: requestNotification.project}, {$push: {projectMembers: requestNotification.requester}});
+      await updateProject({_id: requestNotification.project._id}, {$push: {projectMembers: requestNotification.requester._id}});
 
-      return res.status(200).send("Responded successfully.");
+      return res.status(201).send("Responded successfully.");
     }
    } catch( error ) {
     validateError(error, 400, res);

@@ -8,6 +8,7 @@ export interface UserDocument extends mongoose.Document {
   githubEmail: string,
   githubRepoLink: string,
   githubAccessToken: string,
+  githubUsername: string,
   username: string,
   userBio?: string,
   userImage: string,
@@ -38,6 +39,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true
+  },
+  githubUsername: {
+    type: String,
+    required: true
   },
   username: {
     type: String,
