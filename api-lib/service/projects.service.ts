@@ -1,4 +1,4 @@
-import { ProjectModel, ProjectDocument } from "@/api-lib/models/projectModel";
+import { ProjectModel, ProjectMongooseDocument } from "@/api-lib/models/projectModel";
 import { QueryOptions } from "mongoose";
 
 
@@ -7,6 +7,6 @@ export const getProjects = async (
   populationPath: string, 
   populationMember: string,
   options: QueryOptions={ lean: true }
-): Promise<ProjectDocument[]> =>(
+): Promise<ProjectMongooseDocument[]> =>(
   ProjectModel.find({}, projection, options).populate(populationPath, populationMember)
 )

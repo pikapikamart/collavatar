@@ -3,7 +3,7 @@ import { getGithubId } from "@/api-lib/utils/github";
 import { validateError, getCurrentUser } from "@/api-lib/utils";
 
 
-export const getReposHandler = async(
+export const getAccessTokenHandler = async(
   req: NextApiRequest,
   res: NextApiResponse
 ) =>{

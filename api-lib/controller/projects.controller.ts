@@ -24,7 +24,6 @@ export const getUserProjects = (projectType: string) => async(
   
       if ( projectType==="collaboratedProjects") await currentUser.populate("collaboratedProjects");
       
-  
       return res.status(200).json(currentUser.get(projectType));
     }
   } catch( error ) {
@@ -42,6 +41,7 @@ export const getAllProjectsHandler = async(
       populationPath: "projectOwner",
       populationMembers: "username userImage userBio githubId -_id"
     };
+  
     const collavProjects = await getProjects(
       getProjectOptions.projection,
       getProjectOptions.populationPath,
