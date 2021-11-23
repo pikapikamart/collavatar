@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getGithubId } from "@/api-lib/utils/github";
-import { validateError, getCurrentUser } from "@/api-lib/utils";
+import {  getCurrentUser, validateError, sendCloudinaryImage } from "@/api-lib/utils";
 import { updateUser } from "@/api-lib/service/user.service";
-import { cloudinary } from "@/api-lib/utils/cloudinary";
 
 
 interface UserUpdateProfile {
@@ -22,16 +21,7 @@ export const updateUserHandler = async(
     const currentUser = githubId? await getCurrentUser(githubId, res) : null;
 
     if ( currentUser ) {
-
-      let newImageUrl;
-      // Send request to cloudinary
-      if ( requestUpdateInformation.userImage ) {
-        const uploadResponse = await cloudinary.uploader.upload(requestUpdateInformation.userImage, {
-          upload_preset: "collavatar",
-        });
-        newImageUrl = uploadResponse.url;
-      }
-      // End of send request to cloudinary
+      const newImageUrl = await sendCloudinaryImage(requestUpdateInformation.userImage);
       const newUserUpdateInformation = Object.assign({
         username: requestUpdateInformation.username,
         userBio: requestUpdateInformation.userBio

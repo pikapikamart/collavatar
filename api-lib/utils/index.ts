@@ -1,6 +1,7 @@
 import { NextApiResponse } from "next"
 import { ValidationError } from "yup";
 import { Error } from "mongoose";
+import { cloudinary } from "@/api-lib/utils/cloudinary";
 import { findUser } from "@/api-lib/service/user.service";
 
 
@@ -17,6 +18,16 @@ export const getCurrentUser = async(
   if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 
   return currentUser;
+}
+
+export const sendCloudinaryImage = async( image: string ) =>{
+  if ( image ) {
+    const uploadResponse = await cloudinary.uploader.upload(image, {
+      upload_preset: "collavatar",
+    });
+    return uploadResponse.url;
+  }
+  return ""
 }
 
 export const validateError = (

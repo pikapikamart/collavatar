@@ -1,9 +1,9 @@
 import "@/api-lib/models/projectModel";
-import { ProjectDocument } from "@/api-lib/models/projectModel";
 import { NextApiRequest, NextApiResponse } from "next";
 import { nanoid } from "nanoid";
-import { getGithubId, checkProjectInGithubUser } from "@/api-lib/utils/github";
 import { validateError, getCurrentUser } from "@/api-lib/utils";
+import { getGithubId, checkProjectInGithubUser } from "@/api-lib/utils/github";
+import { ProjectDocument } from "@/api-lib/models/projectModel";
 import { updateUser } from "@/api-lib/service/user.service";
 import { createProject, findProject } from "@/api-lib/service/project.service";
 

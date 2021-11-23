@@ -3,6 +3,7 @@ import NextAuth, { User, Account, Profile, Session} from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { connectDatabase } from "@/api-lib/db";
 import { findUser, createUser } from "@/api-lib/service/user.service";
+import { UserDocument } from "@/api-lib/models/userModel";
 import { getProperty } from "@/api-lib/utils";
 import { fetchGithubEmail } from "@/api-lib/utils/github";
 
@@ -51,7 +52,7 @@ const nextAuthCallbacks = {
 
       const githubEmail = await fetchGithubEmail(account.access_token);
 
-      const newUserModel = {
+      const newUserModel: UserDocument = {
         githubId: user.id,
         githubEmail: githubEmail,
         githubRepoLink: githubRepoLink, 

@@ -1,5 +1,5 @@
 import { FilterQuery, UpdateQuery, QueryOptions, DocumentDefinition, Error } from "mongoose";
-import { UserModel, UserDocument } from "@/api-lib/models/userModel";
+import { UserModel, UserDocument, UserMongooseDocument } from "@/api-lib/models/userModel";
 
 
 export const createUser = async(
@@ -19,6 +19,6 @@ export const updateUser = async(
 export const findUser = async(
   query: FilterQuery<UserDocument>,
   options: QueryOptions = { lean: true }
-): Promise<UserDocument> =>(
+): Promise<UserMongooseDocument> =>(
   UserModel.findOne(query, options)
 )
