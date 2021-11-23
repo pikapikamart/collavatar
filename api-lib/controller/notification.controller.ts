@@ -10,6 +10,7 @@ import { findProjectRequestFromUser,
   createProjectRequest, 
   createProjectResponse, 
   updateProjectRequest } from "@/api-lib/service/notification.service";
+import { NotificationDocument } from "@/api-lib/models/notificationModel";
 
 
 interface RequestQuery {
@@ -44,7 +45,7 @@ export const createProjectRequestHandler = async(
       if ( checkNotificationExistence &&
          !checkNotificationExistence.responded ) return res.status(409).send("Request to project already created. Wait for response.");
   
-      const requestInformation = {
+      const requestInformation: NotificationDocument = {
         ...req.body,
         requester: currentUser._id,
         project: requestedProject._id,
@@ -98,7 +99,7 @@ export const respondProjectRequestHandler = async(
       
       if ( !checkNotificationExistenceInUser ) return res.status(403).send("Can't respond to not owned project request.");
 
-      const responseInformation = {
+      const responseInformation: NotificationDocument = {
         ...responseBody,
         responder: currentUser._id,
         project: requestNotification.project,
