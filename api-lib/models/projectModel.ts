@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { UserDocument } from "./userModel";
+import { UserMongooseDocument } from "./userModel";
 
 
 interface ProjectTags {
@@ -7,7 +7,12 @@ interface ProjectTags {
   needed: boolean
 }
 
-export interface ProjectDocument extends mongoose.Document {
+export interface ProjectMongooseDocument extends ProjectDocument, mongoose.Document {
+  createdAt: Date,
+  updatedAt: Date
+}
+
+export interface ProjectDocument{
   projectName: string,
   projectLink: string,
   projectLimitation: boolean,
@@ -16,8 +21,8 @@ export interface ProjectDocument extends mongoose.Document {
   projectDescription: string,
   projectStatus: string,
   projectId: string,
-  projectOwner: UserDocument["_id"],
-  projectMembers: UserDocument["_id"][],
+  projectOwner: UserMongooseDocument["_id"],
+  projectMembers: UserMongooseDocument["_id"][],
   createdAt?: Date,
   updatedAt?: Date
 }
@@ -70,7 +75,7 @@ const projectSchema = new mongoose.Schema({
 }, { timestamps: true }
 );
 
-const ProjectModel = mongoose.models?.Project || mongoose.model<ProjectDocument>("Project", projectSchema);
+const ProjectModel = mongoose.models?.Project || mongoose.model<ProjectMongooseDocument>("Project", projectSchema);
 
 
 export { ProjectModel };

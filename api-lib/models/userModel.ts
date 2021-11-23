@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
-import { ProjectDocument } from "@/api-lib/models/projectModel";
-import { NotificationDocument } from "@/api-lib/models/notificationModel";
+import { ProjectMongooseDocument } from "@/api-lib/models/projectModel";
+import { NotificationMongooseDocument } from "@/api-lib/models/notificationModel";
 
 
-export interface UserDocument extends mongoose.Document {
+export interface UserMongooseDocument extends UserDocument, mongoose.Document {
+  createdAt: Date,
+  updatedAt: Date
+}
+
+export interface UserDocument {
   githubId: string,
   githubEmail: string,
   githubRepoLink: string,
@@ -12,11 +17,9 @@ export interface UserDocument extends mongoose.Document {
   username: string,
   userBio?: string,
   userImage: string,
-  collaboratedProjects?: ProjectDocument["_id"][],
-  ownedProjects?: ProjectDocument["_id"][],
-  notifications?: NotificationDocument["_id"][],
-  updatedAt?: Date,
-  createdAt?: Date
+  collaboratedProjects?: ProjectMongooseDocument["_id"][],
+  ownedProjects?: ProjectMongooseDocument["_id"][],
+  notifications?: NotificationMongooseDocument["_id"][],
 }
 
 const userSchema = new mongoose.Schema({
@@ -77,7 +80,7 @@ const userSchema = new mongoose.Schema({
 }, {timestamps: true}
 );
 
-const UserModel = mongoose.models?.User || mongoose.model<UserDocument>("User", userSchema);
+const UserModel = mongoose.models?.User || mongoose.model<UserMongooseDocument>("User", userSchema);
 
 
 export { UserModel };

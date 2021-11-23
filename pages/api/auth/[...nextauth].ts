@@ -39,7 +39,7 @@ const nextAuthCallbacks = {
   async signIn({ user, account, profile }: NextCallbackSignIn) {
     await connectDatabase(null, null, null);
 
-    const checkUserExistence = await findUser({ githubId: user.id }, { lean: false });
+    const checkUserExistence = await findUser({ githubId: user.id }, { lean: true });
    
     if ( !checkUserExistence ) {
       const githubRepoLink = getProperty(profile, "html_url");

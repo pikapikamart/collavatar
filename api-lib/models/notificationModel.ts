@@ -1,20 +1,23 @@
 import mongoose from "mongoose";
-import { UserDocument } from "@/api-lib/models/userModel";
-import { ProjectDocument } from "@/api-lib/models/projectModel";
+import { UserMongooseDocument } from "@/api-lib/models/userModel";
+import { ProjectMongooseDocument } from "@/api-lib/models/projectModel";
 
 
-export interface NotificationDocument extends mongoose.Document {
-  requester?: UserDocument["_id"],
-  responder?: UserDocument["_id"],
-  project?: ProjectDocument["_id"],
+export interface NotificationMongooseDocument extends NotificationDocument, mongoose.Document {
+  createdAt?: Date,
+  updatedAt?: Date
+}
+
+export interface NotificationDocument {
+  requester?: UserMongooseDocument["_id"],
+  responder?: UserMongooseDocument["_id"],
+  project?: ProjectMongooseDocument["_id"],
   notificationType: string,
   position: string,
   message: string,
   accepted?: boolean,
   responded?: boolean,
   notificationId?: string,
-  createdAt?: Date,
-  updatedAt?: Date
 }
 
 const notificationSchema = new mongoose.Schema({
@@ -54,7 +57,7 @@ const notificationSchema = new mongoose.Schema({
 }, { timestamps: true }
 );
 
-const NotificationModel = mongoose.models?.Notification || mongoose.model<NotificationDocument>("Notification", notificationSchema);
+const NotificationModel = mongoose.models?.Notification || mongoose.model<NotificationMongooseDocument>("Notification", notificationSchema);
 
 
 export { NotificationModel };
