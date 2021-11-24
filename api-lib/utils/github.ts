@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
 import { getSession } from "next-auth/react";
-import { getProperty } from "./index";
 import { UserDocument } from "@/api-lib/models/userModel";
 
 
@@ -17,7 +16,7 @@ export const getGithubId = async (req: NextApiRequest) =>{
   if ( !userSession || !userSession.user ) return "";
 
   const user: UserSession = userSession.user;
-  const githubId = getProperty(user, "githubId");
+  const githubId = user.githubId;
 
   return githubId;
 }

@@ -4,7 +4,6 @@ import { JWT } from "next-auth/jwt";
 import { connectDatabase } from "@/api-lib/db";
 import { findUser, createUser } from "@/api-lib/service/user.service";
 import { UserDocument } from "@/api-lib/models/userModel";
-import { getProperty } from "@/api-lib/utils";
 import { fetchGithubEmail } from "@/api-lib/utils/github";
 
 
@@ -43,7 +42,7 @@ const nextAuthCallbacks = {
     const checkUserExistence = await findUser({ githubId: user.id }, { lean: true });
    
     if ( !checkUserExistence ) {
-      const githubRepoLink = getProperty(profile, "html_url");
+      const githubRepoLink = profile.html_url;
 
       if ( !account.access_token ||
             !user.name ||

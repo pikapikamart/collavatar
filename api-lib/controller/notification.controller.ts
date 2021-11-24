@@ -2,7 +2,7 @@ import "@/api-lib/models/notificationModel";
 import { NextApiRequest, NextApiResponse } from "next";
 import { nanoid } from "nanoid";
 import { acceptGithubUserInvite, getGithubId, sendGithubUserInvite } from "@/api-lib/utils/github";
-import { getCurrentUser, getProperty, validateError } from "@/api-lib/utils";
+import { getCurrentUser, validateError } from "@/api-lib/utils";
 import { findUser, updateUser } from "@/api-lib/service/user.service";
 import { findProject, updateProject } from "@/api-lib/service/project.service";
 import { findProjectRequestFromUser, 
@@ -13,14 +13,9 @@ import { findProjectRequestFromUser,
 import { NotificationDocument } from "@/api-lib/models/notificationModel";
 
 
-interface RequestQuery {
-  projectId?: string,
-}
-
 export const createProjectRequestHandler = async(req: NextApiRequest, res: NextApiResponse) =>{
   const githubId = await getGithubId(req);
-  const requestQuery: RequestQuery = req.query;
-  const projectId = getProperty(requestQuery, "projectId");
+  const projectId = req.query["projectid"];
 
   try {
     const currentUser = githubId? await getCurrentUser(githubId, res) : null;
@@ -62,10 +57,6 @@ export const createProjectRequestHandler = async(req: NextApiRequest, res: NextA
   } 
 }
 
-interface ResponseQuery {
-  notificationId?: string
-}
-
 interface ResponseBody {
   accepted: boolean,
   message: string
@@ -73,8 +64,7 @@ interface ResponseBody {
 
 export const respondProjectRequestHandler = async(req: NextApiRequest,res: NextApiResponse) =>{
   const githubId = await getGithubId(req);
-  const responseQuery: ResponseQuery = req.query;
-  const notificationId = getProperty(responseQuery, "notificationId");
+  const notificationId = req.query["notificationId"];
   const responseBody: ResponseBody = {...req.body};
 
   try {

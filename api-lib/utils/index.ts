@@ -5,10 +5,6 @@ import { cloudinary } from "@/api-lib/utils/cloudinary";
 import { findUser } from "@/api-lib/service/user.service";
 
 
-export function getProperty<Type, Key extends keyof Type>(object: Type, key: Key): Type[Key] {
-  return object[key];
-}
-
 export const getCurrentUser = async( githubId: string, res: NextApiResponse )=>{
   const currentUser = await findUser({ githubId }, { lean: false });
   
