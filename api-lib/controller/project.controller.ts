@@ -8,10 +8,7 @@ import { updateUser } from "@/api-lib/service/user.service";
 import { createProject, findProject } from "@/api-lib/service/project.service";
 
 
-export const createProjectHandler = async(
-  req: NextApiRequest,
-  res: NextApiResponse
-) =>{
+export const createProjectHandler = async(req: NextApiRequest, res: NextApiResponse) =>{
   const githubId = await getGithubId(req);
 
   try {

@@ -9,10 +9,7 @@ export function getProperty<Type, Key extends keyof Type>(object: Type, key: Key
   return object[key];
 }
 
-export const getCurrentUser = async(
-  githubId: string, 
-  res: NextApiResponse
-)=>{
+export const getCurrentUser = async( githubId: string, res: NextApiResponse )=>{
   const currentUser = await findUser({ githubId }, { lean: false });
   
   if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
@@ -30,11 +27,7 @@ export const sendCloudinaryImage = async( image: string ) =>{
   return ""
 }
 
-export const validateError = (
-  error: unknown, 
-  httpStatus: number, 
-  res: NextApiResponse
-) =>{
+export const validateError = (error: unknown, httpStatus: number, res: NextApiResponse) =>{
   if ( error instanceof ValidationError ) {
     console.log(error);
     return res.status(httpStatus).send(error.errors)

@@ -46,10 +46,7 @@ interface Repository {
   [key: string] : any
 }
 
-export const checkProjectInGithubUser = async( 
-  accessToken: string,
-  projectName: string   
-) =>{
+export const checkProjectInGithubUser = async( accessToken: string,projectName: string   ) =>{
   const userRepositories = await fetch("https://api.github.com/user/repos", {
     headers: {
       "Authorization": `token ${accessToken}`
@@ -69,10 +66,7 @@ interface Invitee {
   username: string
 }
 
-export const sendGithubUserInvite = async(
-  owner: UserDocument, 
-  invitee: Invitee
-): Promise<string> =>{
+export const sendGithubUserInvite = async(owner: UserDocument, invitee: Invitee): Promise<string> =>{
   const inviteUser = await fetch(`https://api.github.com/repos/${owner.githubUsername}/${invitee.repo}/collaborators/${invitee.username}`, {
     method: "PUT",
     headers: {
@@ -85,10 +79,7 @@ export const sendGithubUserInvite = async(
   return inviteInformation.id;
 }
 
-export const acceptGithubUserInvite = async(
-  requester: UserDocument,
-  githubInviteId: string
-) =>{
+export const acceptGithubUserInvite = async(requester: UserDocument,githubInviteId: string) =>{
   const acceptInvite = await fetch(`https://api.github.com/user/repository_invitations/${githubInviteId}`, {
     method: "PATCH",
     headers: {

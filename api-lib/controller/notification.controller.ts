@@ -17,10 +17,7 @@ interface RequestQuery {
   projectId?: string,
 }
 
-export const createProjectRequestHandler = async(
-  req: NextApiRequest,
-  res: NextApiResponse
-) =>{
+export const createProjectRequestHandler = async(req: NextApiRequest, res: NextApiResponse) =>{
   const githubId = await getGithubId(req);
   const requestQuery: RequestQuery = req.query;
   const projectId = getProperty(requestQuery, "projectId");
@@ -74,10 +71,7 @@ interface ResponseBody {
   message: string
 }
 
-export const respondProjectRequestHandler = async(
-  req: NextApiRequest,
-  res: NextApiResponse
-) =>{
+export const respondProjectRequestHandler = async(req: NextApiRequest,res: NextApiResponse) =>{
   const githubId = await getGithubId(req);
   const responseQuery: ResponseQuery = req.query;
   const notificationId = getProperty(responseQuery, "notificationId");

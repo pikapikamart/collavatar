@@ -5,12 +5,7 @@ import { getGithubId } from "@/api-lib/utils/github";
 import { validateError, getCurrentUser } from "@/api-lib/utils";
 
 
-export const userProjectSelections = {
-  collaborated: "collaboratedProjects",
-  owned: "ownedProjects"
-}
-
-export const getUserProjects = (projectType: string) => async(
+export const getUserProjects = (projectType: "collaboratedProjects" | "ownedProjects") => async(
   req: NextApiRequest,
   res: NextApiResponse
 ) =>{
