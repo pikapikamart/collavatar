@@ -3,7 +3,7 @@ import { NextPage } from "next";
 
 const Collab: NextPage = () =>{
   return (
-    <div></div>
+    <div>Hello</div>
   );
 }
 

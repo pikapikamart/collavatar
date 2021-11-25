@@ -5,8 +5,12 @@ import { cloudinary } from "@/api-lib/utils/cloudinary";
 import { findUser } from "@/api-lib/service/user.service";
 
 
-export const getCurrentUser = async( githubId: string, res: NextApiResponse )=>{
-  const currentUser = await findUser({ githubId }, { lean: false });
+export const getCurrentUser = async( 
+  githubId: string,
+  res: NextApiResponse,
+  projection: string = ""
+)=>{
+  const currentUser = await findUser({ githubId }, projection, { lean: false });
   
   if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 

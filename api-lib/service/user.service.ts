@@ -18,7 +18,8 @@ export const updateUser = async(
 
 export const findUser = async(
   query: FilterQuery<UserDocument>,
+  projection: string = "",
   options: QueryOptions = { lean: true }
 ): Promise<UserMongooseDocument> =>(
-  UserModel.findOne(query, options)
+  UserModel.findOne(query, projection, options)
 )

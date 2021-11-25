@@ -6,10 +6,9 @@ import { signIn, signOut, useSession } from "next-auth/react";
 const Home: NextPage = () => {
   const image = useRef<HTMLImageElement | null>(null);
   const { data: session  } = useSession();
-  console.log(session);
 
   const handleAuthSignIn = () =>{
-    signIn("github");
+    signIn("github", {callbackUrl: "http://localhost:3000/collabs"});
   }
 
   const handleAuthSignOut = () =>{
