@@ -11,20 +11,15 @@ if (!MONGODB_URI) {
   )
 }
 
-
 type Mongoose = {
-  conn: null | typeof import("mongoose"),
-  promise: null | Promise<typeof import("mongoose")>
+  conn: null | typeof mongoose,
+  promise: null | Promise<typeof mongoose>
 }
+
 declare global {
   var mongooseGlobal: Mongoose;
 }
 
-/**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections growing exponentially
- * during API Route usage.
- */
 let cached = global.mongooseGlobal;
 
 if (!cached) {

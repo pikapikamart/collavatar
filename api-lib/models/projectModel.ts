@@ -2,11 +2,6 @@ import mongoose from "mongoose";
 import { UserMongooseDocument } from "./userModel";
 
 
-interface ProjectTags {
-  tagName: string,
-  needed: boolean
-}
-
 export interface ProjectMongooseDocument extends ProjectDocument, mongoose.Document {
   createdAt: Date,
   updatedAt: Date
@@ -17,7 +12,9 @@ export interface ProjectDocument{
   projectLink: string,
   projectLimitation: boolean,
   projectCapacity: number,
-  projectTags: ProjectTags[],
+  projectTags: {
+    tagName: string,
+    needed: boolean}[],
   projectDescription: string,
   projectStatus: string,
   projectId: string,
@@ -45,7 +42,8 @@ const projectSchema = new mongoose.Schema({
     required: true,
     default: 0
   },
-  projectTags: [{
+  projectTags: [
+    {
     tagName: {type: String},
     needed: {type: Boolean}
   }],

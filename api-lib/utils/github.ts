@@ -41,6 +41,7 @@ export const fetchGithubEmail = async( accessToken: string ) =>{
   return primaryEmail? primaryEmail.email : "";
 }
 
+// Haven't typed
 interface Repository {
   [key: string] : any
 }
