@@ -17,6 +17,7 @@ export interface UserDocument {
   username: string,
   userBio?: string,
   userImage: string,
+  isDoneConfiguring?: boolean,
   collaboratedProjects?: ProjectMongooseDocument["_id"][],
   ownedProjects?: ProjectMongooseDocument["_id"][],
   notifications?: NotificationMongooseDocument["_id"][],
@@ -58,6 +59,9 @@ const userSchema = new mongoose.Schema({
   userImage: {
     type: String,
     required: true
+  },
+  isDoneConfiguring: {
+    type: String
   },
   collaboratedProjects: [
     {

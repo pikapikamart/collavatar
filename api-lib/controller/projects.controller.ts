@@ -32,7 +32,7 @@ export const getAllProjectsHandler = async(
 ) =>{
   try {
     const getProjectOptions = {
-      projection: "-_id -projectMembers",
+      projection: "-_id ",
       populationPath: "projectOwner",
       populationMembers: "username userImage userBio githubId -_id"
     };
@@ -41,8 +41,8 @@ export const getAllProjectsHandler = async(
       getProjectOptions.projection,
       getProjectOptions.populationPath,
       getProjectOptions.populationMembers);
-    
-      return res.status(200).json(collavProjects);
+
+    return res.status(200).json(collavProjects);
   } catch( error ) {
     validateError(error, 400, res);
   }

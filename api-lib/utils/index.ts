@@ -10,7 +10,7 @@ export const getCurrentUser = async(
   res: NextApiResponse,
   projection: string = ""
 )=>{
-  const currentUser = await findUser({ githubId }, projection, { lean: false });
+  const currentUser = await findUser({ githubId }, { lean: false }, projection);
   
   if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 

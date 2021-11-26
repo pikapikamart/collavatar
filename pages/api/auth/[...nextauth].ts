@@ -58,7 +58,8 @@ const nextAuthCallbacks = {
         githubAccessToken: account.access_token,
         githubUsername: user.name,
         username: user.name,
-        userImage: user.image
+        userImage: user.image,
+        isDoneConfiguring: false
       }
 
       await createUser(newUserModel);
