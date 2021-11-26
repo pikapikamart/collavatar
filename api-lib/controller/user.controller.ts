@@ -8,7 +8,8 @@ export const getCurrentUserHandler = async( req: NextApiRequest, res: NextApiRes
   const githubId = await getGithubId(req);
 
   try {
-    const currentUser = githubId? await getCurrentUser(githubId, res, "-_id -githubAccessToken -githubUsername"): null;
+    const userProjections = "-_id -githubAccessToken -githubUsername -updatedAt";
+    const currentUser = githubId? await getCurrentUser(githubId, res, userProjections): null;
 
     if ( currentUser ) {
       return res.status(200).json(currentUser);

@@ -9,7 +9,7 @@ const handler = nc();
 handler.use(connectDatabase);
 
 // Get all projects for client side
-handler.get(verifyUser, getAllProjectsHandler);
+handler.get(getAllProjectsHandler);
 
 
 export default handler;

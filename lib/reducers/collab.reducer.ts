@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 import { AppThunk } from "../store";
+import { fetcher } from "@/lib/utils";
 
 
 interface CollabProject {
@@ -31,7 +32,7 @@ interface CollavatarProjects {
   openSource: CollabProject[]
 }
 
-export const collabSlice = createSlice({
+export const collabProjectsSlice = createSlice({
   name: "collab",
   initialState: {} as CollavatarProjects,
   reducers: {
@@ -54,6 +55,9 @@ export const collabSlice = createSlice({
 export const fetchAllCollavatarProjects = (): AppThunk => async dispatch =>{
 
   // Fetch for api
-  
+    const collavatarProjects: CollabProject[] = await fetcher("/api/projects");
   // Set fetched data to Json and send dispatch
+    dispatch(collabProjectsSlice.actions.setAllProjects(collavatarProjects));
 }
+
+export default collabProjectsSlice.reducer;
