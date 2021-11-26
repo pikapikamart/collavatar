@@ -12,8 +12,6 @@ export const getCurrentUser = async(
 )=>{
   const currentUser = await findUser({ githubId }, { lean: false }, projection);
   
-  if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
-
   return currentUser;
 }
 

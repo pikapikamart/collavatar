@@ -13,22 +13,22 @@ export const getNotificationsHandler = async(
   try {
     const currentUser = githubId? await getCurrentUser(githubId, res) : null;
 
-    if ( currentUser ){
-      const notificationsOptions = {
-        populationPath: "notifications",
-        populationMembers: "-_id username githubId"
-      }
-      
-      await currentUser.populate({
-        path: notificationsOptions.populationPath,
-        populate: {
-          path: "requester responder",
-          select: notificationsOptions.populationMembers
-        }
-      });
+    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 
-      return res.status(200).json(currentUser.notifications);      
+    const notificationsOptions = {
+      populationPath: "notifications",
+      populationMembers: "-_id username githubId"
     }
+    
+    await currentUser.populate({
+      path: notificationsOptions.populationPath,
+      populate: {
+        path: "requester responder",
+        select: notificationsOptions.populationMembers
+      }
+    });
+
+    return res.status(200).json(currentUser.notifications);      
   } catch( error ){
     validateError(error, 400, res);
   }

@@ -14,29 +14,29 @@ export const createProjectHandler = async(req: NextApiRequest, res: NextApiRespo
   try {
     const currentUser = githubId? await getCurrentUser(githubId, res) : null;
 
-    if ( currentUser ) {
-      const newCollavProject: ProjectDocument = {
-        ...req.body,
-        projectId: nanoid(15),
-        projectStatus: "Ongoing",
-        projectOwner: currentUser._id,
-        projectMembers: [currentUser._id]
-      };
-  
-      const checkProjectExistence = await findProject({ projectName: newCollavProject.projectName, projectOwner: currentUser._id });
+    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 
-      if ( checkProjectExistence ) return res.status(409).send("Project already existed.");
+    const newCollavProject: ProjectDocument = {
+      ...req.body,
+      projectId: nanoid(15),
+      projectStatus: "Ongoing",
+      projectOwner: currentUser._id,
+      projectMembers: [currentUser._id]
+    };
+  
+    const checkProjectExistence = await findProject({ projectName: newCollavProject.projectName, projectOwner: currentUser._id });
+
+    if ( checkProjectExistence ) return res.status(409).send("Project already existed.");
+  
+    const repositoryExistence = await checkProjectInGithubUser(currentUser.githubAccessToken, newCollavProject.projectName);
+
+    if ( !repositoryExistence ) return res.status(404).send("Repository not found from github user.");
+
+    const createdProject = await createProject(newCollavProject);
     
-      const repositoryExistence = await checkProjectInGithubUser(currentUser.githubAccessToken, newCollavProject.projectName);
-
-      if ( !repositoryExistence ) return res.status(404).send("Repository not found from github user.");
-
-      const createdProject = await createProject(newCollavProject);
-      
-      await updateUser({ githubId: currentUser.githubId }, { $push: { ownedProjects: createdProject._id}})
+    await updateUser({ githubId: currentUser.githubId }, { $push: { ownedProjects: createdProject._id}})
   
-      return res.status(201).send("Project is successfully created.");
-    }
+    return res.status(201).send("Project is successfully created.");
   } catch( error ) {
     validateError(error, 400, res)
   }

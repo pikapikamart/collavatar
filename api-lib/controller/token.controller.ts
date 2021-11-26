@@ -12,11 +12,11 @@ export const getAccessTokenHandler = async(
   try {
     const currentUser = githubId? await getCurrentUser(githubId, res) : null;
   
-    if ( currentUser ) {
-      const accessToken = currentUser.githubAccessToken;
-      
-      return res.status(200).json({token: accessToken});
-    }
+    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+
+    const accessToken = currentUser.githubAccessToken;
+    
+    return res.status(200).json({token: accessToken});
   } catch( error ) {
     validateError(error, 400, res);
   }

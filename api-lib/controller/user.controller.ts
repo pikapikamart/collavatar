@@ -4,22 +4,6 @@ import {  getCurrentUser, validateError, sendCloudinaryImage } from "@/api-lib/u
 import { updateUser } from "@/api-lib/service/user.service";
 
 
-export const getCurrentUserHandler = async( req: NextApiRequest, res: NextApiResponse ) =>{
-  const githubId = await getGithubId(req);
-
-  try {
-    const userProjections = "-_id -githubAccessToken -githubUsername -updatedAt";
-    const currentUser = githubId? await getCurrentUser(githubId, res, userProjections): null;
-
-    if ( currentUser ) {
-      return res.status(200).json(currentUser);
-    }
-  }catch( error ) {
-    validateError(error, 400, res);
-  }
-}
-
-
 interface UserUpdateProfile {
   username: string,
   userBio: string
@@ -36,17 +20,17 @@ export const updateUserHandler = async(
   try {
     const currentUser = githubId? await getCurrentUser(githubId, res) : null;
 
-    if ( currentUser ) {
-      const newImageUrl = await sendCloudinaryImage(requestUpdateInformation.userImage);
-      const newUserUpdateInformation = Object.assign({
-        username: requestUpdateInformation.username,
-        userBio: requestUpdateInformation.userBio
-      }, newImageUrl? {userImage: newImageUrl}: null);
-      
-      await updateUser({ githubId }, newUserUpdateInformation);
-      
-      return res.status(200).send("Update user information successful.");
-    }
+    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+
+    const newImageUrl = await sendCloudinaryImage(requestUpdateInformation.userImage);
+    const newUserUpdateInformation = Object.assign({
+      username: requestUpdateInformation.username,
+      userBio: requestUpdateInformation.userBio
+    }, newImageUrl? {userImage: newImageUrl}: null);
+    
+    await updateUser({ githubId }, newUserUpdateInformation);
+    
+    return res.status(200).send("Update user information successful.");
   } catch(error) {
     validateError(error, 400, res);
   }

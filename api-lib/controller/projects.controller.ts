@@ -14,13 +14,13 @@ export const getUserProjects = (projectType: "collaboratedProjects" | "ownedProj
   try {
     const currentUser = githubId? await getCurrentUser(githubId, res) : null;
 
-    if ( currentUser ){
-      if ( projectType==="ownedProjects"){} await currentUser.populate("ownedProjects");
+    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+
+    if ( projectType==="ownedProjects"){} await currentUser.populate("ownedProjects");
   
-      if ( projectType==="collaboratedProjects") await currentUser.populate("collaboratedProjects");
-      
-      return res.status(200).json(currentUser.get(projectType));
-    }
+    if ( projectType==="collaboratedProjects") await currentUser.populate("collaboratedProjects");
+    
+    return res.status(200).json(currentUser.get(projectType));
   } catch( error ) {
     validateError(error, 400, res);
   }
