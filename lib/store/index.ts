@@ -1,12 +1,13 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 import collavatarProjectReducer from "@/lib/reducers/projects.reducer";
+import collavatarUserReducer from "@/lib/reducers/user.reducer";
 
 
 export const makeStore = () => configureStore({
   reducer: {
     projects: collavatarProjectReducer,
-
+    user: collavatarUserReducer
   },
   devTools: true
 })

@@ -33,6 +33,9 @@
       ],
       "@/pages/*": [
         "pages/*"
+      ],
+      "@/styles/*": [
+        "styles/*"
       ]
     }
   },

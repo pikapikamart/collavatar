@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 import { CollavatarProject } from "./projects.reducer"
+import { AppState } from "../store";
 
 
 export interface CollavatarNotification {
@@ -10,8 +11,8 @@ export interface CollavatarNotification {
   notificationType: string,
   position: string,
   message: string,
-  accepted?: boolean,
-  responded?: boolean,
+  accepted?: string,
+  responded?: string,
   notificationId?: string
 }
 
@@ -22,7 +23,8 @@ export interface CollavatarUser {
   userImage: string,
   collaboratedProjects: CollavatarProject[] | [],
   ownedProjects: CollavatarProject[] | [],
-  notifications: CollavatarNotification[] | []
+  notifications: CollavatarNotification[] | [],
+  isDoneConfiguring: string
 }
 
 const userInitialState: CollavatarUser = {
@@ -32,20 +34,21 @@ const userInitialState: CollavatarUser = {
   userImage: "",
   collaboratedProjects: [],
   ownedProjects: [],
-  notifications: []
+  notifications: [],
+  isDoneConfiguring: ""
 }
 
 export const userSlice = createSlice({
   name: "user",
   initialState: userInitialState,
   reducers: {
-    setUser: (state, action) =>{
-      state = {...state, ...action.payload}
+    setUser: (state, action: PayloadAction<CollavatarUser>) =>{
+      return {...state, ...action.payload}
     }
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {
-        console.log('HYDRATE', state, action.payload);
+        // console.log('HYDRATE', state, action.payload);
         return {
             ...state,
             ...action.payload.subject,
@@ -53,3 +56,9 @@ export const userSlice = createSlice({
     },
 },
 })
+
+export const { setUser } = userSlice.actions;
+
+export const selectUser = ( state: AppState ) => state.user;
+
+export default userSlice.reducer;
