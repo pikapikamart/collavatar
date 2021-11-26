@@ -1,10 +1,12 @@
 import { NextPage, GetServerSideProps } from "next";
 import { wrapper } from "@/lib/store";
-import { useSession, getSession } from "next-auth/react";
 import { fetchAllCollavatarProjects } from "@/lib/reducers/projects.reducer";
+import { useCurrentUser } from "@/lib/hooks";
 
 
 const Collab: NextPage = (props) =>{
+  const { data, error } = useCurrentUser();
+  
   
   return (
     <div>Hello</div>
@@ -12,14 +14,10 @@ const Collab: NextPage = (props) =>{
 }
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async({ req, res }) =>{
-
-
-  await store.dispatch(fetchAllCollavatarProjects);
+  store.dispatch(fetchAllCollavatarProjects);
 
   return {
-    props: {
-      // user: JSON.stringify(currentUser)
-    }
+    props: {}
   }
 })
 

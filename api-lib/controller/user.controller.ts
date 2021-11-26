@@ -4,6 +4,19 @@ import {  getCurrentUser, validateError, sendCloudinaryImage } from "@/api-lib/u
 import { updateUser } from "@/api-lib/service/user.service";
 
 
+export const getCurrentUserHandler = async(
+  req: NextApiRequest,
+  res: NextApiResponse
+) =>{
+  const githubId = await getGithubId(req);
+
+  const userProjection = "-_id -githubEmail -githubAccessToken -githubUsername -updatedAt";
+
+  const currentUser = githubId? await getCurrentUser(githubId, userProjection) : null;
+  
+  return res.status(200).json(currentUser);
+}
+
 interface UserUpdateProfile {
   username: string,
   userBio: string
