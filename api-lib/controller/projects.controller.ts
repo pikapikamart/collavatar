@@ -12,7 +12,7 @@ export const getUserProjects = (projectType: "collaboratedProjects" | "ownedProj
   const githubId = await getGithubId(req);
   
   try {
-    const currentUser = githubId? await getCurrentUser(githubId, res) : null;
+    const currentUser = githubId? await getCurrentUser(githubId) : null;
 
     if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 

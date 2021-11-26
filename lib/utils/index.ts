@@ -8,8 +8,6 @@ export const fetcher = async( input: RequestInfo, init: RequestInit = {}, ...arg
       // handle things
       // ....
       payload = await fetchedData.json();
-      // console.log(payload);
-      // console.log(fetchedData.ok);
       if ( fetchedData.ok ) return payload;
   } catch( error ) {
 

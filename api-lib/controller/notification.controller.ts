@@ -18,7 +18,7 @@ export const createProjectRequestHandler = async(req: NextApiRequest, res: NextA
   const projectId = req.query["projectid"];
 
   try {
-    const currentUser = githubId? await getCurrentUser(githubId, res) : null;
+    const currentUser = githubId? await getCurrentUser(githubId) : null;
 
     if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 
@@ -68,7 +68,7 @@ export const respondProjectRequestHandler = async(req: NextApiRequest,res: NextA
   const responseBody: ResponseBody = {...req.body};
 
   try {
-    const currentUser = githubId? await getCurrentUser(githubId, res) : null;
+    const currentUser = githubId? await getCurrentUser(githubId) : null;
 
     if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 

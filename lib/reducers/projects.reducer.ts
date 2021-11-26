@@ -4,7 +4,7 @@ import { AppThunk } from "../store";
 import { fetcher } from "@/lib/utils";
 
 
-interface CollabProject {
+export interface CollavatarProject {
   projectName: string,
   projectLink: string,
   projectLimitation: boolean,
@@ -26,15 +26,22 @@ interface CollabProject {
 }
 
 interface CollavatarProjects {
-  all: CollabProject[],
-  available?: CollabProject[],
-  joined: CollabProject[],
-  openSource: CollabProject[]
+  all: CollavatarProject[] | [],
+  available?: CollavatarProject[] | [],
+  joined: CollavatarProject[] | [],
+  openSource: CollavatarProject[] | []
 }
 
-export const collabProjectsSlice = createSlice({
-  name: "collab",
-  initialState: {} as CollavatarProjects,
+const projectsInitialState: CollavatarProjects = {
+  all: [],
+  available: [],
+  joined: [],
+  openSource: []
+} 
+
+export const collavatarProjectSlice = createSlice({
+  name: "projects",
+  initialState: projectsInitialState,
   reducers: {
     setAllProjects: (state, action) =>{
       state.all = action.payload;
@@ -55,9 +62,9 @@ export const collabProjectsSlice = createSlice({
 export const fetchAllCollavatarProjects = (): AppThunk => async dispatch =>{
 
   // Fetch for api
-    const collavatarProjects: CollabProject[] = await fetcher("/api/projects");
+    const collavatarProjects: CollavatarProject[] = await fetcher("/api/projects");
   // Set fetched data to Json and send dispatch
-    dispatch(collabProjectsSlice.actions.setAllProjects(collavatarProjects));
+    dispatch(collavatarProjectSlice.actions.setAllProjects(collavatarProjects));
 }
 
-export default collabProjectsSlice.reducer;
+export default collavatarProjectSlice.reducer;

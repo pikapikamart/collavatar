@@ -18,7 +18,7 @@ export const updateUserHandler = async(
   const requestUpdateInformation: UserUpdateProfile = {...req.body};
   
   try {
-    const currentUser = githubId? await getCurrentUser(githubId, res) : null;
+    const currentUser = githubId? await getCurrentUser(githubId) : null;
 
     if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
 
