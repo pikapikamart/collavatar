@@ -7,13 +7,13 @@ interface UserSession {
   name?: string | null
   email?: string | null
   image?: string | null,
-  githubId?: string
+  githubId?: number
 }
 
 export const getGithubId = async (req: NextApiRequest) =>{
   const userSession = await getSession({ req });
 
-  if ( !userSession || !userSession.user ) return "";
+  if ( !userSession || !userSession.user ) return null
 
   const user: UserSession = userSession.user;
   const githubId = user.githubId;

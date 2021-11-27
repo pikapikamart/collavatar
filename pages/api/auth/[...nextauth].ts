@@ -39,7 +39,7 @@ const nextAuthCallbacks = {
   async signIn({ user, account, profile }: NextCallbackSignIn) {
     await connectDatabase(null, null, null);
 
-    const checkUserExistence = await findUser({ githubId: user.id }, { lean: true });
+    const checkUserExistence = await findUser({ githubId: parseInt(user.id) }, { lean: true });
    
     if ( !checkUserExistence ) {
       const githubRepoLink = profile.html_url;
@@ -52,7 +52,7 @@ const nextAuthCallbacks = {
       const githubEmail = await fetchGithubEmail(account.access_token);
 
       const newUserModel: UserDocument = {
-        githubId: user.id,
+        githubId: parseInt(user.id),
         githubEmail: githubEmail,
         githubRepoLink: githubRepoLink, 
         githubAccessToken: account.access_token,

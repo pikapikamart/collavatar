@@ -33,7 +33,7 @@ export const updateUserHandler = async(
   try {
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+    if ( !currentUser || !githubId ) return res.status(403).send("Forbidden. Create your account properly.");
 
     const newImageUrl = await sendCloudinaryImage(requestUpdateInformation.userImage);
     const newUserUpdateInformation = Object.assign({

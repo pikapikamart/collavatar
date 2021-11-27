@@ -6,7 +6,7 @@ import { findUser } from "@/api-lib/service/user.service";
 
 
 export const getCurrentUser = async( 
-  githubId: string,
+  githubId: number,
   projection: string = ""
 )=>{
   const currentUser = await findUser({ githubId }, { lean: false }, projection);

@@ -3,21 +3,22 @@ import { wrapper } from "@/lib/store";
 import { fetchAllCollavatarProjects } from "@/lib/reducers/projects.reducer";
 import { useAppDispatch, useCurrentUser } from "@/lib/hooks";
 import { useRouter } from "next/dist/client/router";
-import { CollavatarUser, setUser } from "@/lib/reducers/user.reducer";
+// import { setUser } from "@/lib/reducers/user.reducer";
 
 
 const Collab: NextPage = (props) =>{
-  const router = useRouter();
-  // const userData: CollavatarUser = useCurrentUser().data;
-  const { data, error, isLoading } = useCurrentUser();
-  const dispatch = useAppDispatch();
+  // const router = useRouter();
+  // const { data, isLoading } = useCurrentUser();
+  // const dispatch = useAppDispatch();
 
-  if ( data && data.isDoneConfiguring==="false") {
-    dispatch(setUser(data));
-    router.replace("/api/configure");
-  }
+  // if ( data && data.isDoneConfiguring==="false") {
+  //   dispatch(setUser(data));
+  //   router.replace("/user/configure");
+  //   // Preventing bottom component to render for now
+  //   return <div>Spinner</div>
+  // }
 
-  if ( isLoading ) return <div>Spinner</div>;
+  // if ( isLoading ) return <div>Spinner</div>;
 
   return (
     <div>

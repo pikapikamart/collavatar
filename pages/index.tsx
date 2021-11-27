@@ -9,7 +9,7 @@ const Home: NextPage = () => {
   // console.log(session);
 
   const handleAuthSignIn = () =>{
-    signIn("github", {callbackUrl: "http://localhost:3000/collabs"});
+    signIn("github", {callbackUrl: "http://localhost:3000/user/configure"});
   }
 
   const handleAuthSignOut = () =>{

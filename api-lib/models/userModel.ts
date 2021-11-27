@@ -9,7 +9,7 @@ export interface UserMongooseDocument extends UserDocument, mongoose.Document {
 }
 
 export interface UserDocument {
-  githubId: string,
+  githubId: number,
   githubEmail: string,
   githubRepoLink: string,
   githubAccessToken: string,
@@ -25,7 +25,7 @@ export interface UserDocument {
 
 const userSchema = new mongoose.Schema({
   githubId: {
-    type: String,
+    type: Number,
     required: true,
     unique: true
   },
@@ -61,7 +61,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   isDoneConfiguring: {
-    type: String
+    type: Boolean
   },
   collaboratedProjects: [
     {
