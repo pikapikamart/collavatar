@@ -32,11 +32,12 @@ const UserConfigurePage: UserConfigure = () =>{
     }
   }, [ data ])
 
-  if ( !data.isDoneConfiguring ) {
+  if ( data && !data.isDoneConfiguring ) {
     return (
       <Configure />
     )
   }
+  
   return (
     <div>
       Spinner
