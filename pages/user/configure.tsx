@@ -1,30 +1,47 @@
-import { NextPage } from "next";
-import { ReactElement, ReactNode } from "react";
-import { useAppDispatch, useAppSelector, useCurrentUser } from "@/lib/hooks";
-import { selectUser, thunkSetUser } from "@/lib/reducers/user.reducer";
-import HTMLHead from "@/page-components/layout/head";
+import { NextPage, GetServerSideProps } from "next";
+import { useRouter } from "next/dist/client/router";
 import { useSession, getSession } from "next-auth/react";
-import { GetServerSideProps } from "next";
+import { ReactElement, ReactNode, useEffect } from "react";
+import { useAppDispatch, useCurrentUser } from "@/lib/hooks";
+import { CollavatarUser, thunkSetUser } from "@/lib/reducers/user.reducer";
+import HTMLHead from "@/page-components/layout/head";
+import { Configure } from "@/page-components/configure";
 
 
 type UserConfigure = NextPage & {
   getLayout: (page: ReactElement) => ReactNode
 }
 
+export interface Configuration extends CollavatarUser {
+  isDoneConfiguring: boolean
+}
+
 const UserConfigurePage: UserConfigure = () =>{
   const { data: session } = useSession();
-  const { data, error, isLoading } = useCurrentUser();
+  const { data } = useCurrentUser<Configuration>();
   const dispatch = useAppDispatch();
-  if ( session ) {
-    if ( data && !data.isDoneConfiguring) {
-      dispatch(thunkSetUser({isDoneConfiguring: true}))
-    } if ( data && data.isDoneConfiguring ) {
+  const router = useRouter();
 
+  useEffect(() =>{
+    if ( session && data ) {
+      if ( !data.isDoneConfiguring ) {
+        dispatch(thunkSetUser({...data, isDoneConfiguring: true}))
+      } else {
+        router.replace("/collabs")
+      }
     }
-    // return a component
+  }, [ data ])
+
+  if ( !data.isDoneConfiguring ) {
+    return (
+      <Configure />
+    )
   }
-  // replace
-  return <div>1</div>
+  return (
+    <div>
+      Spinner
+    </div>
+  )
 }
 
 UserConfigurePage.getLayout = function getLayout(page: ReactElement) {

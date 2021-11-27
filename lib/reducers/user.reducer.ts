@@ -3,6 +3,7 @@ import { HYDRATE } from "next-redux-wrapper";
 import { CollavatarProject } from "./projects.reducer"
 import { AppState, AppThunk } from "../store";
 import { fetcher } from "../utils";
+import { Configuration } from "@/pages/user/configure";
 
 
 export interface CollavatarNotification {
@@ -25,8 +26,7 @@ export interface CollavatarUser {
   userBio: string
   collaboratedProjects: CollavatarProject[] | [],
   ownedProjects: CollavatarProject[] | [],
-  notifications: CollavatarNotification[] | [],
-  isDoneConfiguring: boolean
+  notifications: CollavatarNotification[] | []
 }
 
 const userInitialState: CollavatarUser = {
@@ -37,8 +37,7 @@ const userInitialState: CollavatarUser = {
   userBio: "",
   collaboratedProjects: [],
   ownedProjects: [],
-  notifications: [],
-  isDoneConfiguring: false
+  notifications: []
 }
 
 export const userSlice = createSlice({
@@ -60,26 +59,22 @@ export const userSlice = createSlice({
 },
 })
 
-type UserUpdate = {
-  username?: string,
-  userImage?: string,
-  userBio?: string,
-  isDoneConfiguring?: boolean
-}
-// export const { setUser } = userSlice.actions;
-export const thunkSetUser = (update: UserUpdate): AppThunk => async dispatch =>{
+export const { setUser } = userSlice.actions;
 
-  // fetch to api
-  const updateData = {
+export const thunkSetUser = (update: Configuration): AppThunk => async dispatch =>{
+  const fetchUpdateData = {
     method: "PATCH",
-    Headers: {
+    headers: {
+      "Accept": "application/json",
       "Content-Type": "application/json"
     },
     body: JSON.stringify(update)
   }
-  const updateUser = await fetcher("/api/user", updateData);
+  await fetcher("/api/user", fetchUpdateData);
 
-
+  const { isDoneConfiguring, ...userProfile} = update;
+  
+  dispatch(setUser(userProfile));
 }
 
 export const selectUser = ( state: AppState ) => state.user;

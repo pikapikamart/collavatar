@@ -58,6 +58,7 @@ const nextAuthCallbacks = {
         githubAccessToken: account.access_token,
         githubUsername: user.name,
         username: user.name,
+        userBio: "",
         userImage: user.image,
         isDoneConfiguring: false
       }

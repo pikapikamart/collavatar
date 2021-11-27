@@ -15,7 +15,7 @@ export interface UserDocument {
   githubAccessToken: string,
   githubUsername: string,
   username: string,
-  userBio?: string,
+  userBio: string,
   userImage: string,
   isDoneConfiguring?: boolean,
   collaboratedProjects?: ProjectMongooseDocument["_id"][],
