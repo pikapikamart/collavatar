@@ -1,0 +1,16 @@
+@use "../Abstract/variables" as var;
+@use "../Abstract/functions" as func;
+@use "../Abstract/mixins" as mix;
+
+
+%centerized {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+%column-centerized {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
