@@ -28,10 +28,12 @@ export const ProfilePicture = ({ name, src, setUserPicture}: ProfilePictureProps
   }
 
   return (
-    <div className="configure__avatar-holder">
-      <img className="configure__avatar" 
-        src={src} 
-        alt={name}  />
+    <div>
+      <div className="configure__avatar-holder">
+        <img className="configure__avatar" 
+          src={src} 
+          alt={name} />  
+      </div>
       <input type="file" 
         name="avatar" 
         id="avatar" 

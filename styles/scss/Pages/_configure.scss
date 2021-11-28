@@ -18,22 +18,35 @@
     color: var.$dark-blue-1;
     font-size: func.fluid(20, 3vw, 28);
     max-width: func.fluid(240, 36vw, 500);
-    margin-bottom: func.fluid(16, 3vw, 40 );
+    
     text-align: center;
   }
 
   &__avatar {
-    box-shadow: inset 2px 2px 4px 4px rgba(0, 0, 0, .2);
     border-radius: 50%;
-    height: func.rem(128);
-    margin: 0 auto;
-    width: func.rem(128);
+    height: func.fluid(128, 12.3vw, 160);
+    width: func.fluid(128, 12.3vw, 160);
+    
+    &-holder {
+      max-width: max-content;
+      margin: func.fluid(16, 3vw, 40 ) auto func.rem(16);
+      position: relative;
+
+      &::after {
+        content: "";
+        border-radius: 50%;
+        box-shadow: inset 1px 1px 3px 2px rgba(77, 10, 10, 0.15);
+        inset: 0 0 0 0;
+        position: absolute;
+      }
+    }
 
     &-button {
       background: none;
       color: var.$dark-blue-2;
       font-weight: 600;
       font-size: func.rem(18);
+      margin-bottom: func.rem(24);
     }
   }
 }
