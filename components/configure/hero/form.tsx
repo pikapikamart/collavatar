@@ -3,6 +3,7 @@ import { useAppSelector } from "@/lib/hooks";
 import { selectUser, CollavatarUser } from "@/lib/reducers/user.reducer";
 import { ProfilePicture } from "./profilePicture";
 import { InputField } from "@/components/utilities/inputField";
+import { TextAreaField } from "@/components/utilities/textareField";
 
 
 export const HeroForm = () =>{
@@ -17,7 +18,8 @@ export const HeroForm = () =>{
       <ProfilePicture name={userProfile.username} 
         src={userPicture? userPicture : userProfile.userImage}
         setUserPicture={setUserPicture} />
-      <InputField name={"profName"} labelTag={"Profile name"} value={userProfile.username} />
+      <InputField name="profileName" labelTag="Profile name" value={userProfile.username} />
+      <TextAreaField name="profileBio" labelTag="Add a bio." span={bioSpan} />
     </form>
   );
 }

@@ -14,18 +14,13 @@
 }
 
 .input {
+  @extend %inputs;
   $root: &;
-  border-bottom: 1px solid var.$grey-4;
-  color: var.$dark-blue-2;
-  font-size: func.fluid(16, 1.5vw, 17);
   height: func.rem(50);
   padding-top: func.rem(16);
-  transition: border-color .3s ease;;
-  width: inherit;
 
   &.typing,
   &:focus {
-    border-color: var.$dark-blue-3;
 
     + #{$root}__label {
       color: var.$grey-3;
@@ -33,54 +28,45 @@
     }
   }
 
+  &:focus {
+    border-color: var.$dark-blue-3;
+  }
+
   &__holder {
+    @extend %inputs__holder;
     margin-bottom: func.rem(40);
-    position: relative;
-    width: 100%;
   }
 
   &__label {
+    @extend %inputs__label;
     bottom: func.rem(6);
-    color: var.$grey-2;
-    font-size: func.fluid(16, 1.5vw, 17);
-    left: 0;
-    position: absolute;
-    pointer-events: none;
-    transition: transform .3s ease,
-                color .3s ease;
   }
 }
 
 .textarea {
-  border-bottom: 1px solid var.$grey-4;
-  color: var.$dark-blue-2;
-  font-size: func.fluid(16, 1.5vw, 17);
+  @extend %inputs;
+  $root: &;
   height: func.rem(84);
+  padding: func.rem(18) 0 0 0;
   resize: none;
 
   &.typing,
   &:focus {
-    
+
+    + #{$root}__label {
+      color: var.$grey-3;
+      transform: translate(-10%, -120%) scale(.8);
+    }
+
   }
 
   &__holder {
+    @extend %inputs__holder;
     margin-bottom: func.rem(48);
-    position: relative;
-    width: 100%;
   }
 
   &__label {
-    color: var.$grey-2;
-    font-size: func.fluid(16, 1.5vw, 17);
-    left: 0;
-    position: absolute;
-    pointer-events: none;
-    transition: transform .3s ease,
-                color .3s ease;
-
-    span {
-      color: var.$grey-4;
-      font-size: func.rem(14);
-    }
+    @extend %inputs__label;
+    top: func.rem(18);
   }
 }

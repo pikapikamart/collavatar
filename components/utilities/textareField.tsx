@@ -12,7 +12,7 @@ export const TextAreaField = ( {name, labelTag, required=false, span}: TextAreaP
 
   return (
     <div className="textarea__holder">
-      <textarea className="textarea" 
+      <textarea className="textarea"
         name={name} 
         id={name}
         aria-required={required? "true" : "false"} 
