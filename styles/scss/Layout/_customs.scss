@@ -70,3 +70,14 @@
     top: func.rem(18);
   }
 }
+
+.btn {
+  border-radius: func.rem(4);
+  font-size: func.fluid(16, 1.7vw, 18);
+
+  &__submit {
+    background-color: var.$orange-light;
+    color: var.$white;
+    padding: func.fluid(12, 1.2vw, 16) func.fluid(12, 1vw, 14);
+  }
+}

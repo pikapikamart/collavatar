@@ -4,11 +4,12 @@ import { handleInputChange } from "../functionsUtilities.ts";
 interface TextAreaProps {
   name: string,
   labelTag: string,
+  span?: JSX.Element | null,
   required?: boolean,
-  span?: JSX.Element | null
+  maxLength?: number | null
 }
 
-export const TextAreaField = ( {name, labelTag, required=false, span}: TextAreaProps ) =>{
+export const TextAreaField = ( {name, labelTag, span, required=false, maxLength=null}: TextAreaProps ) =>{
 
   return (
     <div className="textarea__holder">
@@ -16,7 +17,8 @@ export const TextAreaField = ( {name, labelTag, required=false, span}: TextAreaP
         name={name} 
         id={name}
         aria-required={required? "true" : "false"} 
-        onChange={handleInputChange}/>
+        onChange={handleInputChange}
+        maxLength={maxLength? maxLength : undefined}/>
       <label className="textarea__label" 
         htmlFor={name}>
           {labelTag}
