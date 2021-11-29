@@ -32,14 +32,6 @@
     border-color: var.$dark-blue-3;
   }
 
-  &[aria-invalid="true"] {
-    border-bottom-color: var.$error;
-
-    ~ #{$root}__error {
-      display: block;
-    }
-  }
-
   &__holder {
     @extend %inputs__holder;
     margin-bottom: func.rem(40);
@@ -51,13 +43,7 @@
   }
 
   &__error {
-    bottom: 0;
-    color: var.$error;
-    display: none;
-    font-size: func.rem(13);
-    left: 0;
-    position: absolute;
-    transform: translateY(100%);
+    @extend %inputs__error;
   }
 }
 
@@ -86,6 +72,10 @@
   &__label {
     @extend %inputs__label;
     top: func.rem(18);
+  }
+
+  &__error {
+    @extend %inputs__error;
   }
 }
 

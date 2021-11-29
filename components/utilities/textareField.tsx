@@ -6,14 +6,16 @@ interface TextAreaProps {
   children: ReactNode,
   name: string,
   labelTag: string,
+  span?: JSX.Element,
   required?: boolean,
   maxLength?: number | null
 }
 
 export const TextAreaField = ( {
-  children, 
+  children,
   name, 
   labelTag, 
+  span,
   required=false, 
   maxLength=null}: TextAreaProps 
 ) =>{
@@ -29,8 +31,9 @@ export const TextAreaField = ( {
       <label className="textarea__label" 
         htmlFor={name}>
           {labelTag}
-          {children}
+          {span?? null}
       </label>
+      {children}
     </div>
   )
 }

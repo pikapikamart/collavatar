@@ -9,7 +9,9 @@ export function handleInputChange( event: React.ChangeEvent ): void{
   }
 } 
 
-export const testInputError = ( element: HTMLInputElement | HTMLTextAreaElement, errorId: string, limit: number = 0 ) =>{
+type TestInputError = (element: HTMLInputElement | HTMLTextAreaElement, errorId: string, limit?: number) => boolean;
+
+export const testInputError: TestInputError = ( element, errorId, limit = 0 ) =>{
 
   const setErrors = () => {
     element.setAttribute("aria-invalid", "true");

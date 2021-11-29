@@ -23,6 +23,14 @@
   transition: border-color .3s ease;
   width: inherit;
 
+  &[aria-invalid="true"] {
+    border-bottom-color: var.$error;
+
+    ~ #{$root}__error {
+      display: block;
+    }
+  }
+
   &__holder {
     position: relative;
     width: 100%;
@@ -41,5 +49,15 @@
       color: var.$grey-4;
       font-size: func.rem(14);
     }
+  }
+
+  &__error {
+    bottom: 0;
+    color: var.$error;
+    display: none;
+    font-size: func.rem(13);
+    left: 0;
+    position: absolute;
+    transform: translateY(100%);
   }
 }
