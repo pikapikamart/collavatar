@@ -1,15 +1,22 @@
+import { ReactNode } from "react";
 import { handleInputChange } from "../functionsUtilities.ts";
 
 
 interface TextAreaProps {
+  children: ReactNode,
   name: string,
   labelTag: string,
-  span?: JSX.Element | null,
   required?: boolean,
   maxLength?: number | null
 }
 
-export const TextAreaField = ( {name, labelTag, span, required=false, maxLength=null}: TextAreaProps ) =>{
+export const TextAreaField = ( {
+  children, 
+  name, 
+  labelTag, 
+  required=false, 
+  maxLength=null}: TextAreaProps 
+) =>{
 
   return (
     <div className="textarea__holder">
@@ -22,7 +29,7 @@ export const TextAreaField = ( {name, labelTag, span, required=false, maxLength=
       <label className="textarea__label" 
         htmlFor={name}>
           {labelTag}
-          {span}
+          {children}
       </label>
     </div>
   )

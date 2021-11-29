@@ -1,15 +1,22 @@
-import React from "react"
+import React, { ReactNode } from "react"
 import { handleInputChange } from "../functionsUtilities.ts";
 
 
 interface InputFieldProps {
+  children: ReactNode,
   name: string,
   labelTag: string,
   required?: boolean ,
   value?: string
 }
 
-export const InputField = ( {name, labelTag, required=true, value=""}: InputFieldProps ) =>{
+export const InputField = ( {
+  children,
+  name, 
+  labelTag, 
+  required=true, 
+  value=""}: InputFieldProps 
+) =>{
 
   return (
     <div className="input__holder">
@@ -22,6 +29,8 @@ export const InputField = ( {name, labelTag, required=true, value=""}: InputFiel
         aria-required={required? "true" : "false"} />
       <label className="input__label"
         htmlFor={name}>{labelTag}{required? " *" : ""}</label>
+        {/* Expecting for p tags error */}
+      {children}
     </div>
   )
 }
