@@ -14,7 +14,7 @@ export const createProjectHandler = async(req: NextApiRequest, res: NextApiRespo
   try {
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+    if ( !currentUser ) return res.status(403).json("Forbidden. Create your account properly.");
 
     const newCollavProject: ProjectDocument = {
       ...req.body,
@@ -26,17 +26,17 @@ export const createProjectHandler = async(req: NextApiRequest, res: NextApiRespo
   
     const checkProjectExistence = await findProject({ projectName: newCollavProject.projectName, projectOwner: currentUser._id });
 
-    if ( checkProjectExistence ) return res.status(409).send("Project already existed.");
+    if ( checkProjectExistence ) return res.status(409).json("Project already existed.");
   
     const repositoryExistence = await checkProjectInGithubUser(currentUser.githubAccessToken, newCollavProject.projectName);
 
-    if ( !repositoryExistence ) return res.status(404).send("Repository not found from github user.");
+    if ( !repositoryExistence ) return res.status(404).json("Repository not found from github user.");
 
     const createdProject = await createProject(newCollavProject);
     
     await updateUser({ githubId: currentUser.githubId }, { $push: { ownedProjects: createdProject._id}})
   
-    return res.status(201).send("Project is successfully created.");
+    return res.status(201).json("Project is successfully created.");
   } catch( error ) {
     validateError(error, 400, res)
   }

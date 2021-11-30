@@ -13,7 +13,7 @@ export const getNotificationsHandler = async(
   try {
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+    if ( !currentUser ) return res.status(403).json({message:"Forbidden. Create your account properly."});
 
     const notificationsOptions = {
       populationPath: "notifications",
@@ -28,7 +28,7 @@ export const getNotificationsHandler = async(
       }
     });
 
-    return res.status(200).json(currentUser.notifications);      
+    return res.status(200).json({notification:currentUser.notifications});      
   } catch( error ){
     validateError(error, 400, res);
   }

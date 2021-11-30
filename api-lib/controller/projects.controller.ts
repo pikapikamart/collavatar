@@ -14,7 +14,7 @@ export const getUserProjects = (projectType: "collaboratedProjects" | "ownedProj
   try {
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+    if ( !currentUser ) return res.status(403).json({message: "Forbidden. Create your account properly."});
 
     if ( projectType==="ownedProjects"){} await currentUser.populate("ownedProjects");
   

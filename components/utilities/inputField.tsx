@@ -20,16 +20,16 @@ export const InputField = ( {
 
   return (
     <div className="input__holder">
-      <input className={`input ${value? "typing" : ""}`} 
-        type="text" 
+      <input className={`input ${value? "typing" : ""}`} type="text" 
         name={name} 
         id={name}
         onChange={handleInputChange}
         defaultValue={value}
         aria-required={required? "true" : "false"} />
       <label className="input__label"
-        htmlFor={name}>{labelTag}{required? " *" : ""}</label>
-        {/* Expecting for p tags error */}
+        htmlFor={name}>{labelTag}{required? " *" : ""}
+      </label>
+      {/* Expecting for p tags error */}
       {children}
     </div>
   )

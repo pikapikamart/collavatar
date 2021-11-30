@@ -9,8 +9,9 @@ export const fetcher = async( input: RequestInfo, init: RequestInit = {}, ...arg
       // ....
       payload = await fetchedData.json();
       
-      if ( fetchedData.ok ) return payload;
   } catch( error ) {
     // .....
   }
+  
+  if ( fetchedData.ok ) return payload;
 }

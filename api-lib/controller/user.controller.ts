@@ -28,7 +28,7 @@ export const updateUserHandler = async(
   try {
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
-    if ( !currentUser || !githubId ) return res.status(403).send("Forbidden. Create your account properly.");
+    if ( !currentUser || !githubId ) return res.status(403).json({message: "Forbidden. Create your account properly."});
 
     const newImageUrl = await sendCloudinaryImage(updateProfile.userImage);
     const newUserUpdateInformation = Object.assign({
@@ -39,7 +39,7 @@ export const updateUserHandler = async(
     
       await updateUser({ githubId }, newUserUpdateInformation);
     
-    return res.status(200).send("Update user information successful.");
+    return res.status(200).json({message: "Update user information successful."});
   } catch(error) {
     validateError(error, 400, res);
   }

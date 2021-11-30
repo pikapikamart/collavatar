@@ -27,13 +27,13 @@ export const sendCloudinaryImage = async( image: string ) =>{
 export const validateError = (error: unknown, httpStatus: number, res: NextApiResponse) =>{
   if ( error instanceof ValidationError ) {
     console.log(error);
-    return res.status(httpStatus).send(error.errors)
+    return res.status(httpStatus).json({error: error.errors})
   } 
   if ( error instanceof Error ) {
     console.log(error);
-    return res.status(httpStatus).send(error.message);
+    return res.status(httpStatus).json({error:error.message});
   } else {
     console.log(error);
-    return res.status(500).send("Server error. Please try again later.");
+    return res.status(500).json({error:"Server error. Please try again later."});
   }
 }

@@ -20,23 +20,23 @@ export const createProjectRequestHandler = async(req: NextApiRequest, res: NextA
   try {
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+    if ( !currentUser ) return res.status(403).json({message:"Forbidden. Create your account properly."});
 
     const requestedProject = projectId? await findProject({ projectId }, { lean: false }) : null;
   
-    if ( !requestedProject ) return res.status(404).send("Project requested not found.");
+    if ( !requestedProject ) return res.status(404).json({message:"Project requested not found."});
 
-    if ( requestedProject.projectOwner.equals(currentUser._id ) ) return res.status(409).send("Can't send request to owned project.");
+    if ( requestedProject.projectOwner.equals(currentUser._id ) ) return res.status(409).json({message:"Can't send request to owned project."});
 
     const checkUserIfAlreadyMember = requestedProject.projectMembers.find(member => member.equals(currentUser._id));
 
-    if ( checkUserIfAlreadyMember ) return res.status(409).send("Already a member to requested project");
+    if ( checkUserIfAlreadyMember ) return res.status(409).json({message:"Already a member to requested project"});
 
     const projectOwner = await findUser({ _id: requestedProject.projectOwner }, { lean: false });
     const checkNotificationExistence =  await findProjectRequestFromUser(projectOwner, currentUser, requestedProject);
     
     if ( checkNotificationExistence &&
-       !checkNotificationExistence.responded ) return res.status(409).send("Request to project already created. Wait for response.");
+       !checkNotificationExistence.responded ) return res.status(409).json({message:"Request to project already created. Wait for response."});
   
     const requestInformation: NotificationDocument = {
       ...req.body,
@@ -51,7 +51,7 @@ export const createProjectRequestHandler = async(req: NextApiRequest, res: NextA
     
     await updateUser({_id: projectOwner._id}, {$push: { notifications: createdRequest._id }});
     
-    return res.status(201).send("Request for project successful.");
+    return res.status(201).json({message:"Request for project successful."});
   } catch( error ){
     validateError(error, 400, res);
   } 
@@ -70,19 +70,19 @@ export const respondProjectRequestHandler = async(req: NextApiRequest,res: NextA
   try {
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
-    if ( !currentUser ) return res.status(403).send("Forbidden. Create your account properly.");
+    if ( !currentUser ) return res.status(403).json({message: "Forbidden. Create your account properly."});
 
     const requestNotification = notificationId? await findProjectRequest({ notificationId }, { lean: false } ) : null;
 
-    if ( !requestNotification ) return res.status(404).send("Project request not found. Can't respond");
+    if ( !requestNotification ) return res.status(404).json({message:"Project request not found. Can't respond"});
 
-    if ( requestNotification.responded ) return res.status(409).send("Already responded to request.");
+    if ( requestNotification.responded ) return res.status(409).json({message:"Already responded to request."});
     
     await currentUser.populate("notifications");
 
     const checkNotificationExistenceInUser = currentUser.notifications?.find(notif =>notif.requester.equals(requestNotification.requester));
     
-    if ( !checkNotificationExistenceInUser ) return res.status(403).send("Can't respond to not owned project request.");
+    if ( !checkNotificationExistenceInUser ) return res.status(403).json({message:"Can't respond to not owned project request."});
 
     const responseInformation: NotificationDocument = {
       ...responseBody,
@@ -118,7 +118,7 @@ export const respondProjectRequestHandler = async(req: NextApiRequest,res: NextA
 
     await updateProject({_id: requestNotification.project._id}, {$push: {projectMembers: requestNotification.requester._id}});
 
-    return res.status(201).send("Responded successfully.");
+    return res.status(201).json({message:"Responded successfully."});
    } catch( error ) {
     validateError(error, 400, res);
   }

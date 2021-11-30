@@ -14,6 +14,6 @@ export const verifyUser = async (
     return next();
   }
 
-  return res.status(401).send("User need to sign in.");
+  return res.status(401).json("User need to sign in.");
 }
 

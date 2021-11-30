@@ -22,16 +22,13 @@ export const TextAreaField = ( {
 
   return (
     <div className="textarea__holder">
-      <textarea className="textarea"
-        name={name} 
-        id={name}
+      <textarea className="textarea" name={name}  id={name}
         aria-required={required? "true" : "false"} 
         onChange={handleInputChange}
         maxLength={maxLength? maxLength : undefined}/>
-      <label className="textarea__label" 
-        htmlFor={name}>
-          {labelTag}
-          {span?? null}
+      <label className="textarea__label" htmlFor={name}>
+        {labelTag}
+        {span?? null}
       </label>
       {children}
     </div>

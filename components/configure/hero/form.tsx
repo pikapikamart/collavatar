@@ -6,6 +6,7 @@ import { InputField } from "@/components/utilities/inputField";
 import { TextAreaField } from "@/components/utilities/textareField";
 import { SubmitButton } from "@/components/utilities/button";
 import { testInputError } from "@/components/functionsUtilities.ts";
+import { fetcher } from "@/lib/utils";
 
 
 type FormTarget = Element & {
@@ -18,7 +19,7 @@ export const HeroForm = () =>{
   const [ userPicture, setUserPicture ] = useState("");
   const liveRegion = useRef<HTMLParagraphElement | null>(null);
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) =>{
+  const handleFormSubmit = async(event: React.FormEvent<HTMLFormElement>) =>{
     event.preventDefault();
     const errorMessages = Array<string>();
     const target = event.target as FormTarget;
@@ -34,7 +35,20 @@ export const HeroForm = () =>{
     if ( errorMessages.length ) {
       liveRegion.current!.textContent = "Form submission invalid. Check your, " + errorMessages.join(", ") + " input fields";
     } else {
-      // liveRegion.current!.textContent = "Form submission succes"
+      const test = {
+        username: profileName.value,
+        userBio: profileBio.value,
+        userImage: userPicture
+      }
+      await fetcher("/api/user", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(test)
+      })
+      liveRegion.current!.textContent = "Form submission success";
+      
     }
   }
 
@@ -44,31 +58,25 @@ export const HeroForm = () =>{
     <form className="configure__form"
       onSubmit={handleFormSubmit}>
       <h1 className="configure__title">Configure your profile information</h1>
-      <p className="visually-hidden"
-        ref={liveRegion}
+      <p className="visually-hidden" ref={liveRegion}
         aria-live="polite"></p>
       <ProfilePicture name={userProfile.username} 
         src={userPicture? userPicture : userProfile.userImage}
         setUserPicture={setUserPicture} />
-      <InputField name="profileName" 
-        labelTag="Profile name" 
+      <InputField name="profileName" labelTag="Profile name" 
         value={userProfile.username}>
-          <p className="input__error" 
-            id="profileNameError">
-              enter a profile name
+          <p className="input__error" id="profileNameError">
+            enter a profile name
           </p>
       </InputField>
-      <TextAreaField name="profileBio" 
-        labelTag="Add a bio." 
+      <TextAreaField name="profileBio" labelTag="Add a bio." 
         maxLength={200}
         span={bioSpan} >
-          <p className="textarea__error"
-            id="profileBioError">
-              bio exceeds maximum characters
+          <p className="textarea__error" id="profileBioError">
+            bio exceeds maximum characters
           </p>
       </TextAreaField>
-      <SubmitButton type="submit"
-        text="Start Collaborating" />
+      <SubmitButton type="submit" text="Start Collaborating" />
     </form>
   );
 }
