@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { getGithubId } from "@/api-lib/utils/github";
-import { validateError, getCurrentUser } from "@/api-lib/utils";
-import { ClientError } from "./defaultMessages";
+import { getCurrentUser } from "@/api-lib/utils";
+import { ClientError, validateError } from "@/api-lib/utils/errors";
 
 
 export const getAccessTokenHandler = async(
@@ -14,7 +14,7 @@ export const getAccessTokenHandler = async(
     const currentUser = githubId? await getCurrentUser(githubId) : null;
   
     if ( !currentUser ) {
-      return res.status(403).json(ClientError()[403]);
+      return ClientError(res, 403);
     }
 
     const accessToken = currentUser.githubAccessToken;

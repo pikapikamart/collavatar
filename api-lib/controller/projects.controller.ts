@@ -2,8 +2,8 @@ import "@/api-lib/models/projectModel";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getProjects } from "@/api-lib/service/projects.service";
 import { getGithubId } from "@/api-lib/utils/github";
-import { validateError, getCurrentUser } from "@/api-lib/utils";
-import { ClientError } from "./defaultMessages";
+import { getCurrentUser } from "@/api-lib/utils";
+import { ClientError, validateError } from "@/api-lib/utils/errors";
 
 
 export const getUserProjects = (projectType: "collaboratedProjects" | "ownedProjects") => async(
@@ -16,7 +16,7 @@ export const getUserProjects = (projectType: "collaboratedProjects" | "ownedProj
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
     if ( !currentUser ) {
-      return res.status(403).json(ClientError()[403]);
+      return ClientError(res, 403);
     }
 
     if ( projectType==="ownedProjects") {

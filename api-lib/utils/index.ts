@@ -1,6 +1,3 @@
-import { NextApiResponse } from "next"
-import { ValidationError } from "yup";
-import { Error } from "mongoose";
 import { cloudinary } from "@/api-lib/utils/cloudinary";
 import { findUser } from "@/api-lib/service/user.service";
 
@@ -24,16 +21,4 @@ export const sendCloudinaryImage = async( image: string ) =>{
   return ""
 }
 
-export const validateError = (error: unknown, httpStatus: number, res: NextApiResponse) =>{
-  if ( error instanceof ValidationError ) {
-    console.log(error);
-    return res.status(httpStatus).json({error: error.errors})
-  } 
-  if ( error instanceof Error ) {
-    console.log(error);
-    return res.status(httpStatus).json({error:error.message});
-  } else {
-    console.log(error);
-    return res.status(500).json({error:"Server error. Please try again later."});
-  }
-}
+

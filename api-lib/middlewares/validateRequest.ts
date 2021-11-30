@@ -1,7 +1,7 @@
 import { AnySchema } from "yup";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
-import { validateError } from "@/api-lib/utils";
+import { validateError } from "@/api-lib/utils/errors";
 
 
 export const validateRequest = ( schema: AnySchema) => async(

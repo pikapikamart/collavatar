@@ -2,7 +2,7 @@ import "@/api-lib/models/notificationModel";
 import { NextApiRequest, NextApiResponse } from "next";
 import { nanoid } from "nanoid";
 import { acceptGithubUserInvite, getGithubId, sendGithubUserInvite } from "@/api-lib/utils/github";
-import { getCurrentUser, validateError } from "@/api-lib/utils";
+import { getCurrentUser } from "@/api-lib/utils";
 import { findUser, updateUser } from "@/api-lib/service/user.service";
 import { findProject, updateProject } from "@/api-lib/service/project.service";
 import { findProjectRequestFromUser, 
@@ -11,7 +11,7 @@ import { findProjectRequestFromUser,
   createProjectResponse, 
   updateProjectRequest } from "@/api-lib/service/notification.service";
 import { NotificationDocument } from "@/api-lib/models/notificationModel";
-import { ClientError } from "./defaultMessages";
+import { ClientError, validateError } from "@/api-lib/utils/errors";
 
 
 export const createProjectRequestHandler = async(req: NextApiRequest, res: NextApiResponse) =>{
@@ -22,30 +22,30 @@ export const createProjectRequestHandler = async(req: NextApiRequest, res: NextA
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
     if ( !currentUser ) {
-      return res.status(403).json(ClientError()[403]);
+      return ClientError(res, 403);
     }
 
     const requestedProject = projectId? await findProject({ projectId }, { lean: false }) : null;
   
     if ( !requestedProject ) {
-      return res.status(404).json(ClientError("Project requested not found.")[404]);
+      return ClientError(res, 404, "Project requested not found.");
     }
 
     if ( requestedProject.projectOwner.equals(currentUser._id ) ) {
-      return res.status(409).json(ClientError("Can't send request to owned project.")[409]);
+      return ClientError(res, 409, "Can't send request to owned project.");
     }
 
     const checkUserIfAlreadyMember = requestedProject.projectMembers.find(member => member.equals(currentUser._id));
 
     if ( checkUserIfAlreadyMember ) {
-      return res.status(409).json(ClientError("Already a member to requested project")[409]);
+      return ClientError(res, 409, "Already a member to requested project")
     }
 
     const projectOwner = await findUser({ _id: requestedProject.projectOwner }, { lean: false });
     const checkNotificationExistence =  await findProjectRequestFromUser(projectOwner, currentUser, requestedProject);
     
     if ( checkNotificationExistence && !checkNotificationExistence.responded ) {
-      return res.status(409).json(ClientError("Request to project already created. Wait for response.")[409]);
+      return ClientError(res, 409, "Request to project already created. Wait for response.");
     }
   
     const requestInformation: NotificationDocument = {
@@ -80,19 +80,27 @@ export const respondProjectRequestHandler = async(req: NextApiRequest,res: NextA
   try {
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
-    if ( !currentUser ) return res.status(403).json({message: "Forbidden. Create your account properly."});
+    if ( !currentUser ) {
+      return ClientError(res, 403);
+    }
 
     const requestNotification = notificationId? await findProjectRequest({ notificationId }, { lean: false } ) : null;
 
-    if ( !requestNotification ) return res.status(404).json({message:"Project request not found. Can't respond"});
+    if ( !requestNotification ) {
+      return ClientError(res, 404, "Project request not found. Can't respond.");
 
-    if ( requestNotification.responded ) return res.status(409).json({message:"Already responded to request."});
+    }
+    if ( requestNotification.responded ) {
+      return ClientError(res, 409, "Already responded to request.");
+    }
     
     await currentUser.populate("notifications");
 
     const checkNotificationExistenceInUser = currentUser.notifications?.find(notif =>notif.requester.equals(requestNotification.requester));
     
-    if ( !checkNotificationExistenceInUser ) return res.status(403).json({message:"Can't respond to not owned project request."});
+    if ( !checkNotificationExistenceInUser ) {
+      return ClientError(res, 404, "Notification not found in user's notifications list.")
+    }
 
     const responseInformation: NotificationDocument = {
       ...responseBody,

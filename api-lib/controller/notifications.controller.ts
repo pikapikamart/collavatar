@@ -1,8 +1,8 @@
 import "@/api-lib/models/notificationModel";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getGithubId } from "@/api-lib/utils/github";
-import { getCurrentUser, validateError } from "@/api-lib/utils";
-import { ClientError } from "./defaultMessages";
+import { getCurrentUser } from "@/api-lib/utils";
+import { ClientError, validateError } from "@/api-lib/utils/errors";
 
 
 export const getNotificationsHandler = async(
@@ -15,7 +15,7 @@ export const getNotificationsHandler = async(
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
     if ( !currentUser ) {
-      return res.status(403).json(ClientError()[403]);
+      return ClientError(res, 403);
     }
 
     const notificationsOptions = {

@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getGithubId } from "@/api-lib/utils/github";
-import { getCurrentUser, validateError, sendCloudinaryImage } from "@/api-lib/utils";
+import { getCurrentUser, sendCloudinaryImage } from "@/api-lib/utils";
 import { UserDocument } from "@/api-lib/models/userModel";
 import { updateUser } from "@/api-lib/service/user.service";
-import { ClientError } from "./defaultMessages";
+import { ClientError, validateError } from "@/api-lib/utils/errors";
 
 
 export const getCurrentUserHandler = async(
@@ -30,7 +30,7 @@ export const updateUserHandler = async(
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
     if ( !currentUser || !githubId ) {
-      return res.status(403).json(ClientError()[403]);
+      return ClientError(res, 403);
     }
 
     const newImageUrl = await sendCloudinaryImage(updateProfile.userImage);
@@ -40,7 +40,7 @@ export const updateUserHandler = async(
     }, newImageUrl? {userImage: newImageUrl} : null,
       updateProfile.isDoneConfiguring ? { isDoneConfiguring: true } : null);
     
-      await updateUser({ githubId }, newUserUpdateInformation);
+    await updateUser({ githubId }, newUserUpdateInformation);
     
     return res.status(200).json({message: "Update user information successful."});
   } catch(error) {

@@ -1,12 +1,12 @@
 import "@/api-lib/models/projectModel";
 import { NextApiRequest, NextApiResponse } from "next";
 import { nanoid } from "nanoid";
-import { validateError, getCurrentUser } from "@/api-lib/utils";
+import { getCurrentUser } from "@/api-lib/utils";
 import { getGithubId, checkProjectInGithubUser } from "@/api-lib/utils/github";
 import { ProjectDocument } from "@/api-lib/models/projectModel";
 import { updateUser } from "@/api-lib/service/user.service";
 import { createProject, findProject } from "@/api-lib/service/project.service";
-import { ClientError } from "./defaultMessages";
+import { ClientError, validateError } from "@/api-lib/utils/errors";
 
 
 export const createProjectHandler = async(req: NextApiRequest, res: NextApiResponse) =>{
@@ -16,7 +16,7 @@ export const createProjectHandler = async(req: NextApiRequest, res: NextApiRespo
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
     if ( !currentUser ) {
-      return res.status(403).json(ClientError()[403]);
+      return ClientError(res, 403);
     }
 
     const newCollavProject: ProjectDocument = {
@@ -30,13 +30,13 @@ export const createProjectHandler = async(req: NextApiRequest, res: NextApiRespo
     const checkProjectExistence = await findProject({ projectName: newCollavProject.projectName, projectOwner: currentUser._id });
 
     if ( checkProjectExistence ) {
-      return res.status(409).json(ClientError("Project already existed.")[409]);
+      return ClientError(res, 409, "Project already existed.")
     }
   
     const repositoryExistence = await checkProjectInGithubUser(currentUser.githubAccessToken, newCollavProject.projectName);
 
     if ( !repositoryExistence ) {
-      return res.status(404).json(ClientError("Repository not found from github user.")[404]);
+      return ClientError(res, 404, "Repository not found from github user.")
     }
 
     const createdProject = await createProject(newCollavProject);
