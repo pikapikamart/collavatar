@@ -35,7 +35,7 @@ export const HeroForm = () =>{
     if ( errorMessages.length ) {
       liveRegion.current!.textContent = "Form submission invalid. Check your, " + errorMessages.join(", ") + " input fields";
     } else {
-      const test = {
+      const userUpdateProfile = {
         username: profileName.value,
         userBio: profileBio.value,
         userImage: userPicture
@@ -45,7 +45,7 @@ export const HeroForm = () =>{
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(test)
+        body: JSON.stringify(userUpdateProfile)
       })
       liveRegion.current!.textContent = "Form submission success";
       

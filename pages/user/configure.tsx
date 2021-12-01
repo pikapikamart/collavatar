@@ -18,7 +18,7 @@ export interface Configuration extends CollavatarUser {
 
 const UserConfigurePage: UserConfigure = () =>{
   const { data: session } = useSession();
-  const { data } = useCurrentUser<Configuration>();
+  const { data } = useCurrentUser<Configuration>("swr");
   const userProfile = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const router = useRouter();

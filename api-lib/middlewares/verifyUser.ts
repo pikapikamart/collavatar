@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
 import { getSession } from "next-auth/react";
+import { ClientError } from "../controller/defaultMessages";
 
 
 export const verifyUser = async (
@@ -14,6 +15,6 @@ export const verifyUser = async (
     return next();
   }
 
-  return res.status(401).json("User need to sign in.");
+  return res.status(401).json(ClientError()[401]);
 }
 

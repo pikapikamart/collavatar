@@ -11,6 +11,7 @@ import { findProjectRequestFromUser,
   createProjectResponse, 
   updateProjectRequest } from "@/api-lib/service/notification.service";
 import { NotificationDocument } from "@/api-lib/models/notificationModel";
+import { ClientError } from "./defaultMessages";
 
 
 export const createProjectRequestHandler = async(req: NextApiRequest, res: NextApiResponse) =>{
@@ -20,23 +21,32 @@ export const createProjectRequestHandler = async(req: NextApiRequest, res: NextA
   try {
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
-    if ( !currentUser ) return res.status(403).json({message:"Forbidden. Create your account properly."});
+    if ( !currentUser ) {
+      return res.status(403).json(ClientError()[403]);
+    }
 
     const requestedProject = projectId? await findProject({ projectId }, { lean: false }) : null;
   
-    if ( !requestedProject ) return res.status(404).json({message:"Project requested not found."});
+    if ( !requestedProject ) {
+      return res.status(404).json(ClientError("Project requested not found.")[404]);
+    }
 
-    if ( requestedProject.projectOwner.equals(currentUser._id ) ) return res.status(409).json({message:"Can't send request to owned project."});
+    if ( requestedProject.projectOwner.equals(currentUser._id ) ) {
+      return res.status(409).json(ClientError("Can't send request to owned project.")[409]);
+    }
 
     const checkUserIfAlreadyMember = requestedProject.projectMembers.find(member => member.equals(currentUser._id));
 
-    if ( checkUserIfAlreadyMember ) return res.status(409).json({message:"Already a member to requested project"});
+    if ( checkUserIfAlreadyMember ) {
+      return res.status(409).json(ClientError("Already a member to requested project")[409]);
+    }
 
     const projectOwner = await findUser({ _id: requestedProject.projectOwner }, { lean: false });
     const checkNotificationExistence =  await findProjectRequestFromUser(projectOwner, currentUser, requestedProject);
     
-    if ( checkNotificationExistence &&
-       !checkNotificationExistence.responded ) return res.status(409).json({message:"Request to project already created. Wait for response."});
+    if ( checkNotificationExistence && !checkNotificationExistence.responded ) {
+      return res.status(409).json(ClientError("Request to project already created. Wait for response.")[409]);
+    }
   
     const requestInformation: NotificationDocument = {
       ...req.body,

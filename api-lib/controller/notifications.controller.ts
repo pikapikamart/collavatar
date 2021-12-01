@@ -2,6 +2,7 @@ import "@/api-lib/models/notificationModel";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getGithubId } from "@/api-lib/utils/github";
 import { getCurrentUser, validateError } from "@/api-lib/utils";
+import { ClientError } from "./defaultMessages";
 
 
 export const getNotificationsHandler = async(
@@ -13,7 +14,9 @@ export const getNotificationsHandler = async(
   try {
     const currentUser = githubId? await getCurrentUser(githubId) : null;
 
-    if ( !currentUser ) return res.status(403).json({message:"Forbidden. Create your account properly."});
+    if ( !currentUser ) {
+      return res.status(403).json(ClientError()[403]);
+    }
 
     const notificationsOptions = {
       populationPath: "notifications",

@@ -12,6 +12,7 @@ export const fetcher = async( input: RequestInfo, init: RequestInit = {}, ...arg
   } catch( error ) {
     // .....
   }
-  
+  console.log(fetchedData);
+  console.log(payload);
   if ( fetchedData.ok ) return payload;
 }
