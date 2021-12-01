@@ -4,6 +4,7 @@ import { getCurrentUser, sendCloudinaryImage } from "@/api-lib/utils";
 import { UserDocument } from "@/api-lib/models/userModel";
 import { updateUser } from "@/api-lib/service/user.service";
 import { ClientError, validateError } from "@/api-lib/utils/errors";
+import { ClientSuccess } from "@/api-lib/utils/success";
 
 
 export const getCurrentUserHandler = async(
@@ -16,7 +17,7 @@ export const getCurrentUserHandler = async(
 
   const currentUser = githubId? await getCurrentUser(githubId, userProjection) : null;
  
-  return res.status(200).json({user: currentUser});
+  return ClientSuccess(res, 200, "", currentUser);
 }
 
 export const updateUserHandler = async(
@@ -42,7 +43,7 @@ export const updateUserHandler = async(
     
     await updateUser({ githubId }, newUserUpdateInformation);
     
-    return res.status(200).json({message: "Update user information successful."});
+    return ClientSuccess(res, 200, "Update user information successful");
   } catch(error) {
     validateError(error, 400, res);
   }

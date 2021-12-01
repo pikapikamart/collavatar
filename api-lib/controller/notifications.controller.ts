@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getGithubId } from "@/api-lib/utils/github";
 import { getCurrentUser } from "@/api-lib/utils";
 import { ClientError, validateError } from "@/api-lib/utils/errors";
+import { ClientSuccess } from "@/api-lib/utils/success";
 
 
 export const getNotificationsHandler = async(
@@ -31,7 +32,7 @@ export const getNotificationsHandler = async(
       }
     });
 
-    return res.status(200).json({notification:currentUser.notifications});      
+    return ClientSuccess(res, 200, "", currentUser.notifications);
   } catch( error ){
     validateError(error, 400, res);
   }

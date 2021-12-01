@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { getGithubId } from "@/api-lib/utils/github";
 import { getCurrentUser } from "@/api-lib/utils";
 import { ClientError, validateError } from "@/api-lib/utils/errors";
+import { ClientSuccess } from "@/api-lib/utils/success";
 
 
 export const getAccessTokenHandler = async(
@@ -19,7 +20,7 @@ export const getAccessTokenHandler = async(
 
     const accessToken = currentUser.githubAccessToken;
     
-    return res.status(200).json({token: accessToken});
+    return ClientSuccess(res, 200, "", accessToken);
   } catch( error ) {
     validateError(error, 400, res);
   }

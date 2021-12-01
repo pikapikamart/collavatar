@@ -7,6 +7,7 @@ import { ProjectDocument } from "@/api-lib/models/projectModel";
 import { updateUser } from "@/api-lib/service/user.service";
 import { createProject, findProject } from "@/api-lib/service/project.service";
 import { ClientError, validateError } from "@/api-lib/utils/errors";
+import { ClientSuccess } from "@/api-lib/utils/success";
 
 
 export const createProjectHandler = async(req: NextApiRequest, res: NextApiResponse) =>{
@@ -43,7 +44,7 @@ export const createProjectHandler = async(req: NextApiRequest, res: NextApiRespo
     
     await updateUser({ githubId: currentUser.githubId }, { $push: { ownedProjects: createdProject._id}})
   
-    return res.status(201).json("Project is successfully created.");
+    return ClientSuccess(res, 201, "Project is successfully created");
   } catch( error ) {
     validateError(error, 400, res)
   }

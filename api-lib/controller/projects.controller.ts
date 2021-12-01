@@ -4,6 +4,7 @@ import { getProjects } from "@/api-lib/service/projects.service";
 import { getGithubId } from "@/api-lib/utils/github";
 import { getCurrentUser } from "@/api-lib/utils";
 import { ClientError, validateError } from "@/api-lib/utils/errors";
+import { ClientSuccess } from "@/api-lib/utils/success";
 
 
 export const getUserProjects = (projectType: "collaboratedProjects" | "ownedProjects") => async(
@@ -27,7 +28,7 @@ export const getUserProjects = (projectType: "collaboratedProjects" | "ownedProj
       await currentUser.populate("collaboratedProjects");
     }
     
-    return res.status(200).json(currentUser.get(projectType));
+    return ClientSuccess(res, 200, "", currentUser.get(projectType));
   } catch( error ) {
     validateError(error, 400, res);
   }
@@ -49,7 +50,7 @@ export const getAllProjectsHandler = async(
       getProjectOptions.populationPath,
       getProjectOptions.populationMembers);
 
-    return res.status(200).json(collavProjects);
+    return ClientSuccess(res, 200, "", collavProjects);
   } catch( error ) {
     validateError(error, 400, res);
   }

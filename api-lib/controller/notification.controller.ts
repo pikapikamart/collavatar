@@ -12,6 +12,7 @@ import { findProjectRequestFromUser,
   updateProjectRequest } from "@/api-lib/service/notification.service";
 import { NotificationDocument } from "@/api-lib/models/notificationModel";
 import { ClientError, validateError } from "@/api-lib/utils/errors";
+import { ClientSuccess } from "@/api-lib/utils/success";
 
 
 export const createProjectRequestHandler = async(req: NextApiRequest, res: NextApiResponse) =>{
@@ -61,7 +62,7 @@ export const createProjectRequestHandler = async(req: NextApiRequest, res: NextA
     
     await updateUser({_id: projectOwner._id}, {$push: { notifications: createdRequest._id }});
     
-    return res.status(201).json({message:"Request for project successful."});
+    return ClientSuccess(res, 2021, "Request for project successfull.")
   } catch( error ){
     validateError(error, 400, res);
   } 
@@ -136,7 +137,7 @@ export const respondProjectRequestHandler = async(req: NextApiRequest,res: NextA
 
     await updateProject({_id: requestNotification.project._id}, {$push: {projectMembers: requestNotification.requester._id}});
 
-    return res.status(201).json({message:"Responded successfully."});
+    return ClientSuccess(res, 201, "Responded successfully.");
    } catch( error ) {
     validateError(error, 400, res);
   }
