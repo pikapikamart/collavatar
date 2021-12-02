@@ -1,40 +1,36 @@
 import { NextPage, GetServerSideProps } from "next";
 import { useRouter } from "next/dist/client/router";
-import { useSession, getSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { ReactElement, ReactNode, useEffect } from "react";
-import { useAppDispatch, useAppSelector, useCurrentUser } from "@/lib/hooks";
-import { CollavatarUser, selectUser, thunkSetUser } from "@/lib/reducers/user.reducer";
+import { useAppDispatch, useCurrentUser } from "@/lib/hooks";
+import { thunkSetUser } from "@/lib/reducers/user.reducer";
 import HTMLHead from "@/page-components/layout/head";
 import { Configure } from "@/page-components/configure";
+import { buildFetchedUpdate, fetcher } from "@/lib/utils";
 
 
 type UserConfigure = NextPage & {
   getLayout: (page: ReactElement) => ReactNode
 }
 
-export interface Configuration extends CollavatarUser {
-  isDoneConfiguring: boolean
-}
-
 const UserConfigurePage: UserConfigure = () =>{
-  const { data: session } = useSession();
-  const { data } = useCurrentUser<Configuration>("swr");
-  const userProfile = useAppSelector(selectUser);
+  // Dont use swr in here
+  const { session, userProfile } = useCurrentUser();
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   useEffect(() =>{
-    if ( session && data ) {
-      if ( !data.isDoneConfiguring ) {
-        // set to true after finishing the layout
-        dispatch(thunkSetUser({...data, isDoneConfiguring: false}))
+    if ( session && userProfile ) {
+      if ( !userProfile.isDoneConfiguring) {
+        const updateConfiguration = buildFetchedUpdate("PATCH", {isDoneConfiguring: true});
+        fetcher("/api/user", updateConfiguration)
       } else {
-        // router.replace("/collabs")
+        router.replace("/collabs")
       }
     }
-  }, [ data ])
+  }, [ session, userProfile ])
 
-  if ( data && !data.isDoneConfiguring && userProfile.githubId ) {
+  if ( userProfile && !userProfile.isDoneConfiguring && userProfile.githubId ) {
     return (
       <Configure />
     )

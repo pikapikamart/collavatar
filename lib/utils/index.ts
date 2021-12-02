@@ -1,5 +1,19 @@
 
 
+export type ErrorStatus = {
+  status: number,
+  title: string,
+  error: string
+}
+
+export type SuccessStatus = {
+  status: number,
+  message: string,
+  data: any
+}
+
+export type FetchedDataStatus = SuccessStatus | ErrorStatus;
+
 export const fetcher = async( input: RequestInfo, init: RequestInit = {}, ...args: any[]) =>{
   const fetchedData = await fetch(input, init);
   let payload;
@@ -12,7 +26,19 @@ export const fetcher = async( input: RequestInfo, init: RequestInit = {}, ...arg
   } catch( error ) {
     // .....
   }
-  console.log(fetchedData);
-  console.log(payload);
-  if ( fetchedData.ok ) return payload;
+
+  return payload as ErrorStatus | SuccessStatus;
+}
+
+export const buildFetchedUpdate = (method: string, body: any) =>{
+  const fetchUpdateData = {
+    method: method,
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  }
+
+  return fetchUpdateData;
 }
