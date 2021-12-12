@@ -2,8 +2,7 @@ import { NextPage, GetServerSideProps } from "next";
 import { useRouter } from "next/dist/client/router";
 import { getSession } from "next-auth/react";
 import { ReactElement, ReactNode, useEffect } from "react";
-import { useAppDispatch, useCurrentUser } from "@/lib/hooks";
-import { thunkSetUser } from "@/lib/reducers/user.reducer";
+import { useCurrentUser } from "@/lib/hooks";
 import HTMLHead from "@/page-components/layout/head";
 import { Configure } from "@/page-components/configure";
 import { buildFetchedUpdate, fetcher } from "@/lib/utils";
@@ -14,18 +13,16 @@ type UserConfigure = NextPage & {
 }
 
 const UserConfigurePage: UserConfigure = () =>{
-  // Dont use swr in here
   const { session, userProfile } = useCurrentUser();
-  const dispatch = useAppDispatch();
   const router = useRouter();
 
   useEffect(() =>{
     if ( session && userProfile ) {
       if ( !userProfile.isDoneConfiguring) {
-        const updateConfiguration = buildFetchedUpdate("PATCH", {isDoneConfiguring: true});
-        fetcher("/api/user", updateConfiguration)
+        const updateConfiguration = buildFetchedUpdate("PATCH", {isDoneConfiguring: false});
+        fetcher("/api/user", updateConfiguration);
       } else {
-        router.replace("/collabs")
+        router.replace("/collabs");
       }
     }
   }, [ session, userProfile ])

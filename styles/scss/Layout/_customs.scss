@@ -89,3 +89,77 @@
     padding: func.fluid(12, 1.2vw, 16) func.fluid(12, 1vw, 14);
   }
 }
+
+.toast {
+  border-radius: func.rem(4) 0 0 func.rem(4);
+  box-shadow: 0 0 func.rem(16) func.rem(3) rgba(0, 0, 0, .1);
+  color: var.$white;
+  inset: func.rem(16) 0 auto auto;
+  min-height: func.rem(90);
+  max-width: func.rem(320);
+  padding: 1rem 1rem 1rem 4rem;
+  position: fixed;
+  z-index: 100;
+
+  &__icon-holder {
+    content: "";
+    border-radius: 50%;
+    border: 2px solid var.$white;
+    display: grid;
+    height: func.rem(38);
+    inset: func.rem(45) auto auto func.rem(12);
+    place-content: center;
+    position: absolute;
+    transform: translate(0, -50%);
+    width: func.rem(38);
+  }
+
+  &.success {
+    background-color: var.$toast-success-color;
+  }
+
+  &.failure {
+    background-color: var.$toast-failure-color;
+  }
+}
+
+@keyframes toast-animation {
+
+}
+
+.spinner {
+  background-color: var.$spinner-bg-color;
+  inset: 0 0 0 0;
+  position: fixed;
+  z-index: 50;
+
+  &::after {
+    content: "";
+    animation: spin-spinner 2s linear infinite;
+    border-radius: 50%;
+    box-shadow: 
+    0 func.rem(-48) var.$spinner-color,
+    func.rem(32) func.rem(-32) var.$spinner-color,
+    func.rem(48) 0 var.$spinner-color,
+    func.rem(32) func.rem(32) var.$spinner-color,
+    0 func.rem(48) var.$spinner-color,
+
+    func.rem(-32) func.rem(32) var.$spinner-color,
+    func.rem(-48) 0 var.$spinner-color,
+    func.rem(-32) func.rem(-32) var.$spinner-color;
+    height: func.rem(var.$spinner-size);
+    inset: 50% auto auto 50%;
+    position: absolute;
+    transform: translate(-50%, -50%) rotate(0deg);
+    width: func.rem(var.$spinner-size);
+  }
+}
+
+@keyframes spin-spinner {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

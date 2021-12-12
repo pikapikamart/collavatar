@@ -5,7 +5,7 @@ interface SubmitButtonProps {
   text: string
 }
 
-export const SubmitButton = ( {type, text}:SubmitButtonProps ) =>{
+export const SubmitButton = ( {type="button", text}:SubmitButtonProps ) =>{
 
   return (
     <button className="btn btn__submit"

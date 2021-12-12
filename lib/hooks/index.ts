@@ -9,7 +9,6 @@ export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
 
 export const useAppDispatch = () => useDispatch<AppStore["dispatch"]>(); 
 
-
 export function useCurrentUser() {
   const { data: session } = useSession();
   const userProfile = useAppSelector(selectUser);

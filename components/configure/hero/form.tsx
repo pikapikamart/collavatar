@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useRouter } from "next/dist/client/router";
 import { useAppSelector } from "@/lib/hooks";
 import { selectUser, CollavatarUser } from "@/lib/reducers/user.reducer";
 import { ProfilePicture } from "./profilePicture";
@@ -6,7 +7,8 @@ import { InputField } from "@/components/utilities/inputField";
 import { TextAreaField } from "@/components/utilities/textareField";
 import { SubmitButton } from "@/components/utilities/button";
 import { testInputError } from "@/components/functionsUtilities.ts";
-import { fetcher } from "@/lib/utils";
+import { buildFetchedUpdate, fetcher } from "@/lib/utils";
+import { ToastNotificationProps, ToastNotification } from "@/components/utilities/toastNotification";
 
 
 type FormTarget = Element & {
@@ -16,8 +18,11 @@ type FormTarget = Element & {
 
 export const HeroForm = () =>{
   const userProfile: CollavatarUser = useAppSelector(selectUser);
-  const [ userPicture, setUserPicture ] = useState("");
   const liveRegion = useRef<HTMLParagraphElement | null>(null);
+  const [ userPicture, setUserPicture ] = useState("");
+  const [ toastData, setToastData ] = useState<ToastNotificationProps | null>(null);
+  const [ updateInformation, setUpdateInformation ] = useState<ReturnType<typeof buildFetchedUpdate> | null>(null);
+  const router = useRouter();
 
   const handleFormSubmit = async(event: React.FormEvent<HTMLFormElement>) =>{
     event.preventDefault();
@@ -28,6 +33,7 @@ export const HeroForm = () =>{
     if ( testInputError(profileName, "profileNameError")) {
       errorMessages.push("profile name");
     }
+
     if ( testInputError(profileBio, "profileBioError", 200)) {
       errorMessages.push("profile bio");
     }
@@ -35,49 +41,90 @@ export const HeroForm = () =>{
     if ( errorMessages.length ) {
       liveRegion.current!.textContent = "Form submission invalid. Check your, " + errorMessages.join(", ") + " input fields";
     } else {
-      const userUpdateProfile = {
-        username: profileName.value,
-        userBio: profileBio.value,
-        userImage: userPicture
-      }
-      await fetcher("/api/user", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userUpdateProfile)
-      })
-      liveRegion.current!.textContent = "Form submission success";
-      
+        const userUpdateProfile = {
+          username: profileName.value,
+          userBio: profileBio.value,
+          userImage: userPicture
+        }
+        setUpdateInformation(buildFetchedUpdate("PATCH", userUpdateProfile));
     }
   }
+
+  useEffect(() =>{
+    if ( updateInformation ) {
+      const sendInformation = async() =>{
+        const fetchResult = await fetcher("/api/user", updateInformation);
+        
+        if ( "data" in fetchResult ) {
+          setToastData({
+            title: "Success.",
+            message: fetchResult.message,
+            type: "SUCCESS"
+          });
+          liveRegion.current!.textContent = "Form submission success";
+        } if ( "error" in fetchResult) {
+          setToastData({
+            title: fetchResult.title,
+            message: fetchResult.error,
+            type: "FAILURE"
+          })
+          liveRegion.current!.textContent = fetchResult.error;
+        }
+
+        const notificationTimeout = setTimeout(() => {
+          // setToastData(null);
+          // use router in here to send to collab page the user
+        }, 7000);
+      
+        return () => clearTimeout(notificationTimeout);
+      }
+      sendInformation();
+      setUpdateInformation(null);
+      // could return timeout
+    }
+  }, [ updateInformation ]);
+
 
   const bioSpan = <span>(200 characters maximum)</span>;
 
   return (
-    <form className="configure__form"
-      onSubmit={handleFormSubmit}>
+    <>
+      {/* state = showresult = show toast result */}
+      {/* toast {text, type=success||failure} */}
+
+      { toastData && (
+        <ToastNotification {...toastData} />
+      )}
+      <form className="configure__form"
+        onSubmit={handleFormSubmit}>
       <h1 className="configure__title">Configure your profile information</h1>
-      <p className="visually-hidden" ref={liveRegion}
+      <p className="visually-hidden" 
+        ref={liveRegion}
         aria-live="polite"></p>
       <ProfilePicture name={userProfile.username} 
         src={userPicture? userPicture : userProfile.userImage}
         setUserPicture={setUserPicture} />
-      <InputField name="profileName" labelTag="Profile name" 
+      <InputField name="profileName" 
+        labelTag="Profile name" 
         value={userProfile.username}>
-          <p className="input__error" id="profileNameError">
+          <p className="input__error" 
+            id="profileNameError">
             enter a profile name
           </p>
       </InputField>
-      <TextAreaField name="profileBio" labelTag="Add a bio." 
+      <TextAreaField name="profileBio" 
+        labelTag="Add a bio." 
         maxLength={200}
         span={bioSpan} >
-          <p className="textarea__error" id="profileBioError">
+          <p className="textarea__error" 
+            id="profileBioError">
             bio exceeds maximum characters
           </p>
       </TextAreaField>
-      <SubmitButton type="submit" text="Start Collaborating" />
-    </form>
+      <SubmitButton type="submit" 
+        text="Start Collaborating" />
+      </form>
+    </>
   );
 }
 
