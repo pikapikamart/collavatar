@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/dist/client/router";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppSelector, useForm } from "@/lib/hooks";
 import { selectUser, CollavatarUser } from "@/lib/reducers/user.reducer";
 import { ProfilePicture } from "./profilePicture";
 import { InputField } from "@/components/utilities/inputField";
@@ -23,6 +23,9 @@ export const HeroForm = () =>{
   const [ toastData, setToastData ] = useState<ToastNotificationProps | null>(null);
   const [ updateInformation, setUpdateInformation ] = useState<ReturnType<typeof buildFetchedUpdate> | null>(null);
   const router = useRouter();
+
+  // useFormTesting
+  
 
   const handleFormSubmit = async(event: React.FormEvent<HTMLFormElement>) =>{
     event.preventDefault();
@@ -89,40 +92,35 @@ export const HeroForm = () =>{
 
   return (
     <>
-      {/* state = showresult = show toast result */}
-      {/* toast {text, type=success||failure} */}
-
       { toastData && (
         <ToastNotification {...toastData} />
       )}
       <form className="configure__form"
         onSubmit={handleFormSubmit}>
-      <h1 className="configure__title">Configure your profile information</h1>
-      <p className="visually-hidden" 
-        ref={liveRegion}
-        aria-live="polite"></p>
-      <ProfilePicture name={userProfile.username} 
-        src={userPicture? userPicture : userProfile.userImage}
-        setUserPicture={setUserPicture} />
-      <InputField name="profileName" 
-        labelTag="Profile name" 
-        value={userProfile.username}>
-          <p className="input__error" 
-            id="profileNameError">
-            enter a profile name
-          </p>
-      </InputField>
-      <TextAreaField name="profileBio" 
-        labelTag="Add a bio." 
-        maxLength={200}
-        span={bioSpan} >
-          <p className="textarea__error" 
-            id="profileBioError">
-            bio exceeds maximum characters
-          </p>
-      </TextAreaField>
-      <SubmitButton type="submit" 
-        text="Start Collaborating" />
+        <h1 className="configure__title">Configure your profile information</h1>
+        <p className="visually-hidden" 
+          ref={liveRegion}
+          aria-live="polite"></p>
+        <ProfilePicture name={userProfile.username} 
+          src={userPicture? userPicture : userProfile.userImage}
+          setUserPicture={setUserPicture} />
+        <InputField name="profileName" 
+          labelTag="Profile name" 
+          value={userProfile.username}>
+            <p className="input__error" 
+              id="profileNameError">
+              enter a profile name</p>
+        </InputField>
+        <TextAreaField name="profileBio" 
+          labelTag="Add a bio." 
+          maxLength={200}
+          span={bioSpan} >
+            <p className="textarea__error" 
+              id="profileBioError">
+              bio exceeds maximum characters</p>
+        </TextAreaField>
+        <SubmitButton type="submit" 
+          text="Start Collaborating" />
       </form>
     </>
   );
