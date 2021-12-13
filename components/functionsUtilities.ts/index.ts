@@ -28,7 +28,7 @@ export const testInputError: TestInputError = ( element, errorId, limit = 0 ) =>
       setErrors();
       return true;
     }
-  } else {
+  } if ( element instanceof HTMLTextAreaElement ) {
     if ( limit && element.value.length > limit ) {
       setErrors();
       return true;

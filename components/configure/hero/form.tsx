@@ -6,51 +6,39 @@ import { ProfilePicture } from "./profilePicture";
 import { InputField } from "@/components/utilities/inputField";
 import { TextAreaField } from "@/components/utilities/textareField";
 import { SubmitButton } from "@/components/utilities/button";
-import { testInputError } from "@/components/functionsUtilities.ts";
 import { buildFetchedUpdate, fetcher } from "@/lib/utils";
 import { ToastNotificationProps, ToastNotification } from "@/components/utilities/toastNotification";
 
 
-type FormTarget = Element & {
+interface FormTarget {
   profileName: HTMLInputElement,
   profileBio: HTMLTextAreaElement
 }
 
 export const HeroForm = () =>{
   const userProfile: CollavatarUser = useAppSelector(selectUser);
-  const liveRegion = useRef<HTMLParagraphElement | null>(null);
   const [ userPicture, setUserPicture ] = useState("");
   const [ toastData, setToastData ] = useState<ToastNotificationProps | null>(null);
   const [ updateInformation, setUpdateInformation ] = useState<ReturnType<typeof buildFetchedUpdate> | null>(null);
   const router = useRouter();
 
   // useFormTesting
-  
+  const { registerElement, liveRegion, validateForm } = useForm();
 
   const handleFormSubmit = async(event: React.FormEvent<HTMLFormElement>) =>{
     event.preventDefault();
-    const errorMessages = Array<string>();
-    const target = event.target as FormTarget;
-    const { profileName, profileBio } = target;
+    const validationResult = validateForm();
+
+    if ( validationResult && !validationResult.isFailed ) {
+      const formTargets = (validationResult.fieldElements as unknown) as FormTarget;
+      const userUpdateProfile = {
+        username: formTargets.profileName.value,
+        userBio: formTargets.profileBio.value,
+        userImage: userPicture
+      }
+      setUpdateInformation(buildFetchedUpdate("PATCH", userUpdateProfile));
+    }
     
-    if ( testInputError(profileName, "profileNameError")) {
-      errorMessages.push("profile name");
-    }
-
-    if ( testInputError(profileBio, "profileBioError", 200)) {
-      errorMessages.push("profile bio");
-    }
-
-    if ( errorMessages.length ) {
-      liveRegion.current!.textContent = "Form submission invalid. Check your, " + errorMessages.join(", ") + " input fields";
-    } else {
-        const userUpdateProfile = {
-          username: profileName.value,
-          userBio: profileBio.value,
-          userImage: userPicture
-        }
-        setUpdateInformation(buildFetchedUpdate("PATCH", userUpdateProfile));
-    }
   }
 
   useEffect(() =>{
@@ -106,7 +94,8 @@ export const HeroForm = () =>{
           setUserPicture={setUserPicture} />
         <InputField name="profileName" 
           labelTag="Profile name" 
-          value={userProfile.username}>
+          value={userProfile.username}
+          register={registerElement}>
             <p className="input__error" 
               id="profileNameError">
               enter a profile name</p>
@@ -114,7 +103,8 @@ export const HeroForm = () =>{
         <TextAreaField name="profileBio" 
           labelTag="Add a bio." 
           maxLength={200}
-          span={bioSpan} >
+          span={bioSpan}
+          register={registerElement} >
             <p className="textarea__error" 
               id="profileBioError">
               bio exceeds maximum characters</p>

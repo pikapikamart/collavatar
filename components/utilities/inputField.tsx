@@ -1,12 +1,14 @@
 import React, { ReactNode } from "react"
 import { handleInputChange } from "../functionsUtilities.ts";
+import { UseFormElement } from "@/lib/hooks";
 
 
 interface InputFieldProps {
   children: ReactNode,
   name: string,
   labelTag: string,
-  required?: boolean ,
+  register: (element: UseFormElement) => void,
+  required?: boolean,
   value?: string
 }
 
@@ -14,6 +16,7 @@ export const InputField = ( {
   children,
   name, 
   labelTag, 
+  register,
   required=true, 
   value=""}: InputFieldProps 
 ) =>{
@@ -25,7 +28,14 @@ export const InputField = ( {
         id={name}
         onChange={handleInputChange}
         defaultValue={value}
-        aria-required={required? "true" : "false"} />
+        aria-required={required? "true" : "false"}
+        ref={element =>{
+          element? register({
+            html: element,
+            errorMessageId: name + "Error",
+            errorName: name
+          }) : null
+        }} />
       <label className="input__label"
         htmlFor={name}>{labelTag}{required? " *" : ""}
       </label>

@@ -37,9 +37,9 @@ export const useCurrentUser = () =>{
   }
 }
 
-type UseFormElement = {
-  element: HTMLInputElement | HTMLTextAreaElement,
-  error: string,
+export type UseFormElement = {
+  html: HTMLInputElement | HTMLTextAreaElement,
+  errorMessageId: string,
   errorName: string,
   maxLength?: number
 }
@@ -53,26 +53,27 @@ export const useForm = () =>{
     formElementsArray.current?.push(element);
   }
 
-  const validateForm = (event: React.FormEvent<HTMLFormElement>) =>{
-    event.preventDefault();
-    // map through the formElementsArray and check dynamically
+  const validateForm = () =>{
+    const fieldElements: Record<string, HTMLInputElement | HTMLTextAreaElement> = {};
+    let isFailed = false;
+    // iterate through the formElementsArray and check dynamically
     if ( !formElementsArray.current.length ) return;
 
-    formElementsArray.current.map((element: UseFormElement, index)=>{
-      if ( element.element instanceof HTMLInputElement ) {
-        if ( testInputError(element.element, element.error )) {
-          errorMessages.push(element.errorName);
-        }
+    formElementsArray.current.forEach((element: UseFormElement)=>{
+      if ( testInputError(element.html, element.errorMessageId, element.maxLength )) {
+        errorMessages.push(element.errorName);
       }
-      if ( element.element instanceof HTMLTextAreaElement ) {
-        if ( testInputError(element.element, element.error, element.maxLength )) {
-          errorMessages.push(element.errorName);
-        }
-      }
+      fieldElements[element.html.name] = element.html;
     })
 
     if ( errorMessages.length && liveRegion.current ) {
+      isFailed = true;
       liveRegion.current.textContent = "Form submission invalid. Check your " + errorMessages.join(", ") + " input fields.";
+    }
+
+    return {
+      isFailed,
+      fieldElements
     }
   }
 
