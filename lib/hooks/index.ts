@@ -56,10 +56,10 @@ export const useForm = () =>{
   const validateForm = () =>{
     const fieldElements: Record<string, HTMLInputElement | HTMLTextAreaElement> = {};
     let isFailed = false;
-    // iterate through the formElementsArray and check dynamically
-    if ( !formElementsArray.current.length ) return;
 
-    formElementsArray.current.forEach((element: UseFormElement)=>{
+    if ( !formElementsArray.current.length ) return;
+    
+    formElementsArray.current.forEach((element)=>{
       if ( testInputError(element.html, element.errorMessageId, element.maxLength )) {
         errorMessages.push(element.errorName);
       }

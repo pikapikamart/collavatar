@@ -102,6 +102,14 @@
   position: fixed;
   z-index: 100;
 
+  &__title {
+    font-size: func.rem(18);
+  }
+
+  &__message {
+    font-size: func.rem(14);
+  }
+
   &__icon-holder {
     content: "";
     border-radius: 50%;

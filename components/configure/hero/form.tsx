@@ -20,25 +20,22 @@ export const HeroForm = () =>{
   const [ userPicture, setUserPicture ] = useState("");
   const [ toastData, setToastData ] = useState<ToastNotificationProps | null>(null);
   const [ updateInformation, setUpdateInformation ] = useState<ReturnType<typeof buildFetchedUpdate> | null>(null);
-  const router = useRouter();
-
-  // useFormTesting
   const { registerElement, liveRegion, validateForm } = useForm();
+  const router = useRouter();
 
   const handleFormSubmit = async(event: React.FormEvent<HTMLFormElement>) =>{
     event.preventDefault();
     const validationResult = validateForm();
 
     if ( validationResult && !validationResult.isFailed ) {
-      const formTargets = (validationResult.fieldElements as unknown) as FormTarget;
+      const {profileName, profileBio} = (validationResult.fieldElements as unknown) as FormTarget;
       const userUpdateProfile = {
-        username: formTargets.profileName.value,
-        userBio: formTargets.profileBio.value,
+        username: profileName.value,
+        userBio: profileBio.value,
         userImage: userPicture
       }
       setUpdateInformation(buildFetchedUpdate("PATCH", userUpdateProfile));
     }
-    
   }
 
   useEffect(() =>{
@@ -53,7 +50,8 @@ export const HeroForm = () =>{
             type: "SUCCESS"
           });
           liveRegion.current!.textContent = "Form submission success";
-        } if ( "error" in fetchResult) {
+        } 
+        if ( "error" in fetchResult) {
           setToastData({
             title: fetchResult.title,
             message: fetchResult.error,
@@ -63,7 +61,7 @@ export const HeroForm = () =>{
         }
 
         const notificationTimeout = setTimeout(() => {
-          // setToastData(null);
+          setToastData(null);
           // use router in here to send to collab page the user
         }, 7000);
       

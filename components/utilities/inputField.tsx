@@ -23,7 +23,8 @@ export const InputField = ( {
 
   return (
     <div className="input__holder">
-      <input className={`input ${value? "typing" : ""}`} type="text" 
+      <input className={`input ${value? "typing" : ""}`} 
+        type="text" 
         name={name} 
         id={name}
         onChange={handleInputChange}
