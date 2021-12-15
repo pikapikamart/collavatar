@@ -7,7 +7,7 @@ interface TextAreaProps {
   children: ReactNode,
   name: string,
   labelTag: string,
-  register: (element: UseFormElement) => void,
+  register: ( element: UseFormElement ) => void,
   span?: JSX.Element,
   required?: boolean,
   maxLength?: number | null

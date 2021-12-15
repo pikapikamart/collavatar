@@ -7,9 +7,11 @@
 .configure {
   background-color: var.$white;
   border-radius: .25rem;
-  flex-basis: func.fluid(352, 48vw, 624);
+  max-width: func.fluid(352, 50vw, 624);
+  margin: func.rem(16) auto;
   padding: func.fluid(40, 5vw, 56) func.fluid(32, 5vw, 80);
-  
+  width: 100%;
+
   &__form {
     @extend %column-centerized;
   }

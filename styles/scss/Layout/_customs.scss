@@ -5,12 +5,11 @@
 
 
 .modal-overlay {
-  @extend %centerized;
   background-color: rgba(0, 0, 0, .45);
-  display: flex;
   inset: 0 0 0 0;
+  overflow-y: scroll;
   padding: 1rem;
-  position: absolute;
+  position: fixed;
 }
 
 .input {

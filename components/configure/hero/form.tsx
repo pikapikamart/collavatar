@@ -20,7 +20,12 @@ export const HeroForm = () =>{
   const [ userPicture, setUserPicture ] = useState("");
   const [ toastData, setToastData ] = useState<ToastNotificationProps | null>(null);
   const [ updateInformation, setUpdateInformation ] = useState<ReturnType<typeof buildFetchedUpdate> | null>(null);
-  const { registerElement, liveRegion, validateForm } = useForm();
+  const { 
+    registerElement, 
+    liveRegion, 
+    validateForm,
+    isSuccess,
+    setIsSuccess } = useForm();
   const router = useRouter();
 
   const handleFormSubmit = async(event: React.FormEvent<HTMLFormElement>) =>{
@@ -28,7 +33,7 @@ export const HeroForm = () =>{
     const validationResult = validateForm();
 
     if ( validationResult && !validationResult.isFailed ) {
-      const {profileName, profileBio} = (validationResult.fieldElements as unknown) as FormTarget;
+      const { profileName, profileBio } = (validationResult.fieldElements as unknown) as FormTarget;
       const userUpdateProfile = {
         username: profileName.value,
         userBio: profileBio.value,
@@ -50,6 +55,7 @@ export const HeroForm = () =>{
             type: "SUCCESS"
           });
           liveRegion.current!.textContent = "Form submission success";
+          setIsSuccess(true);
         } 
         if ( "error" in fetchResult) {
           setToastData({
@@ -62,7 +68,6 @@ export const HeroForm = () =>{
 
         const notificationTimeout = setTimeout(() => {
           setToastData(null);
-          // use router in here to send to collab page the user
         }, 7000);
       
         return () => clearTimeout(notificationTimeout);
@@ -72,6 +77,17 @@ export const HeroForm = () =>{
       // could return timeout
     }
   }, [ updateInformation ]);
+
+  useEffect(() =>{
+    if ( isSuccess ) {
+      const timeout = setTimeout(() =>{
+        setIsSuccess(false);
+        router.replace("/collabs")
+      }, 7000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [ isSuccess ]);
 
 
   const bioSpan = <span>(200 characters maximum)</span>;

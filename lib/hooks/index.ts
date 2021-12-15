@@ -1,5 +1,5 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { AppState, AppStore } from "../store";
 import { selectUser, setUser } from "@/lib/reducers/user.reducer";
@@ -46,7 +46,8 @@ export type UseFormElement = {
 
 export const useForm = () =>{
   const liveRegion = useRef<HTMLParagraphElement | null>(null);
-  const formElementsArray = useRef(Array<UseFormElement>())
+  const formElementsArray = useRef(Array<UseFormElement>());
+  const [ isSuccess, setIsSuccess ] = useState(false);
   const errorMessages = Array<string>();
 
   const registerElement = (element: UseFormElement) =>{
@@ -77,5 +78,11 @@ export const useForm = () =>{
     }
   }
 
-  return { registerElement, liveRegion, validateForm };
+  return { 
+    registerElement,
+    liveRegion, 
+    validateForm, 
+    isSuccess,
+    setIsSuccess
+  };
 };
