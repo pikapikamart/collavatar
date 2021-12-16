@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import HTMLHead from "./head";
+import { Header } from "@/components/layout/header";
 
 
 interface LayoutChildren {
@@ -10,6 +11,7 @@ const Layout = ({ children }: LayoutChildren) =>{
   return (
     <>
       <HTMLHead />
+      <Header />
       {children}
     </>
   );

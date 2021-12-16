@@ -25,9 +25,10 @@ p {
 
 button,
 input,
-textarea {
+textarea,
+a {
   &:focus-visible {
-    outline: 3px dashed var.$dark-blue-3;
+    outline: 3px dashed var.$orange-dark;
     outline-offset: 2px;
   }
 }

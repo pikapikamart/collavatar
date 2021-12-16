@@ -1,0 +1,68 @@
+@use "../Abstract/variables" as var;
+@use "../Abstract/functions" as func;
+@use "../Abstract/mixins" as mix;
+@use "../Abstract/extension";
+
+
+.header {
+  @extend %centerized;
+  background-color: var.$dark-blue-2;
+  justify-content: space-between;
+  height: func.fluid(56, 10vw, 64);
+  padding: 0 func.fluid(16, 3vw, 34) 0 func.fluid(16, 2.8vw, 28);
+
+  &__block {
+    align-items: center;
+    display: flex;
+  }
+
+  &__logo {
+
+    &-wrapper {
+      margin-right: func.fluid(14, 4vw, 46);
+    }
+
+    &-link {
+      display: block;
+    }
+  }
+
+  &__current {
+    @extend %column-centerized;
+    align-items: flex-start;
+    background-color: var.$dark-blue-3;
+    border-radius: func.rem(4);
+    padding: func.rem(6) func.fluid(12, 2vw, 24);
+
+    &-title {
+      color: var.$white;
+      font-size: func.fluid(14, 1.5vw, 16);
+      line-height: 1.28;
+    }
+
+    &-text {
+      color: var.$grey-5;
+      font-size: func.fluid(13, 1.5vw, 15);
+      line-height: 1.23;
+    }
+  }
+}
+
+.notification {
+  position: relative;
+
+  &__button {
+    background-color: var.$pink;
+    border-radius: 50%;
+    border: 2px solid var.$white;
+    display: grid;
+    height: func.fluid(34, 3.8vw, 38);
+    place-content: center;
+    width: func.fluid(34, 3.8vw, 38);
+  }
+
+  &__icon {
+    height: func.fluid(19, 2vw, 21);
+    width: func.fluid(19, 2vw, 21);
+  }
+}

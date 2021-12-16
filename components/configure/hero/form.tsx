@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/dist/client/router";
 import { useAppSelector, useForm } from "@/lib/hooks";
 import { selectUser, CollavatarUser } from "@/lib/reducers/user.reducer";
@@ -72,9 +72,9 @@ export const HeroForm = () =>{
       
         return () => clearTimeout(notificationTimeout);
       }
+
       sendInformation();
       setUpdateInformation(null);
-      // could return timeout
     }
   }, [ updateInformation ]);
 
