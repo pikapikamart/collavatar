@@ -1,10 +1,14 @@
+import { CollavatarUser } from "@/lib/reducers/user.reducer";
 import { useExpansion, useAppSelector } from "@/lib/hooks";
 import { selectUser } from "@/lib/reducers/user.reducer";
 
 
-export const UserAvatar = () => {
+interface UserAvatar {
+  user: CollavatarUser
+}
+
+export const UserAvatar = ({ user }: UserAvatar) => {
   const { isExpanded, handleExpansion } = useExpansion();
-  const userProfile = useAppSelector(selectUser);
 
   return (
     <div className="user">
@@ -13,8 +17,8 @@ export const UserAvatar = () => {
         aria-expanded={isExpanded}>
         <span className="visually-hidden">User option dropdown</span>
         <img className="user__image" 
-          src={userProfile.userImage} 
-          alt={userProfile.username}  />
+          src={user.userImage} 
+          alt={user.username}  />
       </button>
     </div>
   );

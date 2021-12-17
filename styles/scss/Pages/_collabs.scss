@@ -1,0 +1,9 @@
+@use "../Abstract/variables" as var;
+@use "../Abstract/functions" as func;
+@use "../Abstract/mixins" as mix;
+@use "../Abstract/extension";
+
+
+.collabs-test {
+  flex-basis: 100%;
+}

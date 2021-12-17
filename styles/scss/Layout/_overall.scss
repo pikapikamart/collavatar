@@ -37,31 +37,45 @@ button {
   padding: 0;
 }
 
+.interface-full-grid {
+  display: grid;
+  grid-template-rows: minmax(min-content, func.rem(64)) calc(100% - func.rem(64));
+  min-height: 100vh;
+}
+
 .interface-wrapper {
   align-items: flex-start;
   display: flex;
 }
 
 .sidebar {
-  // max-width: func.rem(256);
-  // padding-top: func.rem(24);
-  // padding: func.rem(24) func.rem(16) func.rem(16) func.fluid(16, 3vw, 34);
+  background-image: linear-gradient(135deg, var.$dark-blue-3, var.$dark-blue-1);
   inset: auto 0 0 0;
   position: fixed;
   width: 100%;
+  
+  @include mix.breakpoint-content(var.$sidebar-one) {
+    flex: 1 0 func.rem(82);
+    height: 100%;
+    position: static; 
+  }
+  
+  @include mix.breakpoint-content("medium") {
+    flex: 1 0 func.rem(257);
+    padding: func.rem(24) func.rem(16) func.rem(16) func.rem(28);
+  }
 }
 
 .navigation {
-  background-image: linear-gradient(135deg, var.$dark-blue-3, var.$dark-blue-1);
 
   &__heading {
     display: none;
   }
 
-  &__lists {
+  &__list {
     @extend %centerized;
     height: func.rem(64);
-    width: 100%;
+    width: inherit;
   }
 
   &__list-item {
@@ -91,10 +105,38 @@ button {
     }
   }
 
+  @include mix.breakpoint-content(var.$sidebar-one) {
+    height: 100%;
+    
+    &__list {
+      flex-direction: column;
+      gap: func.rem(4) 0;
+      height: auto;
+      padding-top: func.rem(24);
+    }
+
+    &__link { 
+      padding: func.rem(14) func.rem(12);
+      width: auto;
+
+      > svg {
+        height: func.rem(26);
+        width: func.rem(26);
+      }
+
+      > span {
+        display: none;
+      }
+    }
+  }
+
   @include mix.breakpoint-content("medium") {
     
     &__heading {
       display: block;
+      color: var.$white;
+      font-size: func.rem(14);
+      font-weight: 400;
     }
   }
 }

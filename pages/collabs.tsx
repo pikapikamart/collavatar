@@ -8,7 +8,7 @@ const Collab: NextPage = (props) =>{
   useCurrentUser();
 
   return (
-    <div>
+    <div className="collabs-test">
       collab
     </div>
   )

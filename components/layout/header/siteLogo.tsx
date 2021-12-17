@@ -9,7 +9,7 @@ export const SiteLogo = () =>{
         <a className="header__logo-link">
           <span className="visually-hidden">collabs</span>
           <picture>
-            <source media="(min-width: 800px)" srcSet="/svgs/logo/logo-desktop.svg" />
+            <source media="(min-width: 900px)" srcSet="/svgs/logo/logo-desktop.svg" />
             <img src="/svgs/logo/logo-mobile.svg" 
               alt="collavatar"  />
           </picture>

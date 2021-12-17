@@ -12,11 +12,12 @@ const Layout = ({ children }: LayoutChildren) =>{
   return (
     <>
       <HTMLHead />
-      <Header />
-      {/* add sidebar in here */}
-      <div className="interface-wrapper">
-        <Sidebar />
-        {children}
+      <div className="interface-full-grid">
+        <Header />
+        <div className="interface-wrapper">
+          <Sidebar />
+          {children}
+        </div>
       </div>
     </>
   );

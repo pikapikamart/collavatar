@@ -4,7 +4,8 @@
 @mixin breakpoint-content ( $breakpoint ) {
 
   @if func.is-number($breakpoint) {
-    @media ( min-width: $breakpoint ) {
+    $value: $breakpoint + px;
+    @media ( min-width: $value  ) {
       @content;
     }
   } 

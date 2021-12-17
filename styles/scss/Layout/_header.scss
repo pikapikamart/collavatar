@@ -8,7 +8,6 @@
   @extend %centerized;
   background-color: var.$dark-blue-2;
   justify-content: space-between;
-  min-height: func.fluid(56, 10vw, 64);
   padding: func.rem(2) func.fluid(16, 3vw, 34) func.rem(2) func.fluid(16, 2.8vw, 28);
 
   &__block {
@@ -19,13 +18,17 @@
   &__logo {
 
     &-wrapper {
-      margin-right: func.fluid(12, 4vw, 46);
+      margin-right: func.rem(14);
     }
 
     &-link {
       display: block;
       min-width: func.rem(42);
     }
+  }
+
+  &__greet {
+    display: none
   }
 
   &__current {
@@ -46,6 +49,44 @@
       color: var.$grey-5;
       font-size: func.fluid(13, 1.5vw, 15);
       line-height: 1.23;
+    }
+  }
+
+  @include mix.breakpoint-content(var.$sidebar-one) {
+    padding-left: func.rem(16);
+
+    &__greet {
+      display: block;
+      margin-right: func.fluid(4, 1.5vw, 24);
+
+      &-time {
+        color: var.$grey-5;
+        font-size: func.fluid(14, 1.4vw, 16);
+      }
+
+      &-username {
+        color: var.$white;
+        font-size: func.fluid(15, 1.4vw, 17);
+        font-weight: 500;
+      }
+    }
+
+    &__logo {
+
+      &-wrapper {
+        margin-right: func.rem(24);
+      }
+    }
+  }
+
+  @include mix.breakpoint-content("medium") {
+    padding: func.rem(2) func.fluid(16, 3vw, 34) func.rem(2) func.rem(28);
+
+    &__logo {
+
+      &-wrapper {
+        margin-right: func.rem(46);
+      }
     }
   }
 }

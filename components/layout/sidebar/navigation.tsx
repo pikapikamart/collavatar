@@ -16,7 +16,7 @@ export const Navigation = () =>{
   return (
     <nav className="navigation">
       <h2 className="navigation__heading">General</h2>
-      <ul className="navigation__lists">
+      <ul className="navigation__list">
         <li className="navigation__list-item">
           <Link href="/collabs">
             <a className="navigation__link"
@@ -29,7 +29,7 @@ export const Navigation = () =>{
               <path id="Path_5" data-name="Path 5" d="M60.054,430.323a.432.432,0,0,0,.005.612h0a.433.433,0,1,0-.007-.613Z" transform="translate(-57.384 -411.708)" fill="#c9c9c9"/>
               <path id="Path_6" data-name="Path 6" d="M332.945,332.984a.433.433,0,1,0-.2-.819h0a.432.432,0,0,0,.2.818Z" transform="translate(-318.21 -317.847)" fill="#c9c9c9"/>
             </svg>
-              Collabs
+              <span>Collabs</span>  
             </a>
           </Link>
         </li>
@@ -42,7 +42,7 @@ export const Navigation = () =>{
               <g id="Group_23" data-name="Group 23" transform="translate(11.917 14.667)"><path id="Path_9" data-name="Path 9" d="M21.708,23.333H14.375A1.377,1.377,0,0,1,13,21.958V17.375A1.377,1.377,0,0,1,14.375,16h7.333a1.377,1.377,0,0,1,1.375,1.375v4.583A1.377,1.377,0,0,1,21.708,23.333Zm-7.333-6.417a.459.459,0,0,0-.458.458v4.583a.459.459,0,0,0,.458.458h7.333a.459.459,0,0,0,.458-.458V17.375a.459.459,0,0,0-.458-.458Z" transform="translate(-13 -16)" fill="#c9c9c9"/></g>
               <g id="Group_24" data-name="Group 24" transform="translate(11.917)"><path id="Path_10" data-name="Path 10" d="M21.708,12.833H14.375A1.377,1.377,0,0,1,13,11.458V1.375A1.377,1.377,0,0,1,14.375,0h7.333a1.377,1.377,0,0,1,1.375,1.375V11.458A1.377,1.377,0,0,1,21.708,12.833ZM14.375.917a.459.459,0,0,0-.458.458V11.458a.459.459,0,0,0,.458.458h7.333a.459.459,0,0,0,.458-.458V1.375a.459.459,0,0,0-.458-.458Z" transform="translate(-13)" fill="#c9c9c9"/></g>
             </svg>
-              Dashboard
+              <span>Dashboard</span>
             </a>
           </Link>
         </li>
@@ -57,7 +57,7 @@ export const Navigation = () =>{
               <g id="Group_72" data-name="Group 72" transform="translate(19.594 8.938)"><g id="Group_71" data-name="Group 71"><rect id="Rectangle_51" data-name="Rectangle 51" width="0.688" height="1.031" fill="#c9c9c9"/></g></g>
               <g id="Group_74" data-name="Group 74" transform="translate(8.25 21.313)"><g id="Group_73" data-name="Group 73"><rect id="Rectangle_52" data-name="Rectangle 52" width="5.5" height="0.688" fill="#c9c9c9"/></g></g>
             </svg>
-              Workspace
+              <span>Workspace</span>
             </a>
           </Link>
         </li>
