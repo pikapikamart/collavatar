@@ -86,3 +86,14 @@ export const useForm = () =>{
     setIsSuccess
   };
 };
+
+export const useExpansion = () =>{
+  const [ isExpanded, setIsExpanded ] = useState(false);
+
+  const handleExpansion = () => setIsExpanded(prev => !prev);
+
+  return {
+    isExpanded,
+    handleExpansion
+  }
+}

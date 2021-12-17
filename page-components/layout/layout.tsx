@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import HTMLHead from "./head";
 import { Header } from "@/components/layout/header";
+import { Sidebar } from "@/components/layout/sidebar";
 
 
 interface LayoutChildren {
@@ -12,7 +13,11 @@ const Layout = ({ children }: LayoutChildren) =>{
     <>
       <HTMLHead />
       <Header />
-      {children}
+      {/* add sidebar in here */}
+      <div className="interface-wrapper">
+        <Sidebar />
+        {children}
+      </div>
     </>
   );
 }

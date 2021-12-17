@@ -1,0 +1,23 @@
+@use "./functions" as func;
+@use "./variables" as var;
+
+@mixin breakpoint-content ( $breakpoint ) {
+
+  @if func.is-number($breakpoint) {
+    @media ( min-width: $breakpoint ) {
+      @content;
+    }
+  } 
+  
+  @if $breakpoint == "medium" {
+    @media (min-width: var.$medium ) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == "large" {
+    @media (min-width: var.$large ) {
+      @content;
+    }
+  }
+}

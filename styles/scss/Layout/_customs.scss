@@ -87,6 +87,16 @@
     color: var.$white;
     padding: func.fluid(12, 1.2vw, 16) func.fluid(12, 1vw, 14);
   }
+
+  &__header {
+    background-color: var.$pink;
+    border-radius: 50%;
+    border: 2px solid var.$white;
+    display: grid;
+    height: func.fluid(34, 3.8vw, 38);
+    place-content: center;
+    width: func.fluid(34, 3.8vw, 38);
+  }
 }
 
 // keyframes

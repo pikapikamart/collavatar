@@ -1,11 +1,15 @@
 @use "sass:math";
 
-@function rem($px) {
+@function rem( $px ) {
   $value: math.div($px, 16) + rem;
   @return $value;
 }
 
-@function fluid($min, $pref, $max) {
+@function fluid( $min, $pref, $max ) {
   $size: clamp(#{rem($min)}, #{$pref}, #{rem($max)});
   @return $size;
+}
+
+@function is-number( $value ) {
+  @return type-of($value) == "number";
 }

@@ -32,3 +32,69 @@ a {
     outline-offset: 2px;
   }
 }
+
+button {
+  padding: 0;
+}
+
+.interface-wrapper {
+  align-items: flex-start;
+  display: flex;
+}
+
+.sidebar {
+  // max-width: func.rem(256);
+  // padding-top: func.rem(24);
+  // padding: func.rem(24) func.rem(16) func.rem(16) func.fluid(16, 3vw, 34);
+  inset: auto 0 0 0;
+  position: fixed;
+  width: 100%;
+}
+
+.navigation {
+  background-image: linear-gradient(135deg, var.$dark-blue-3, var.$dark-blue-1);
+
+  &__heading {
+    display: none;
+  }
+
+  &__lists {
+    @extend %centerized;
+    height: func.rem(64);
+    width: 100%;
+  }
+
+  &__list-item {
+
+    &:nth-of-type(2) {
+      margin: 0 func.rem(12);
+    }
+  }
+
+  &__link {
+    @extend %column-centerized;
+    border-radius: func.rem(4);
+    color: var.$grey-5;
+    font-size: func.fluid(13, 2vw, 17);
+    gap: func.rem(2) 0;
+    padding: func.rem(4) 0;
+    width: func.rem(88);
+
+    &[aria-current="page"] {
+      background-color: var.$dark-blue-2;
+      box-shadow: 2px 2px 4px 0px var.$dark-blue-1;
+      color: var.$orange-light;
+
+      path {
+        fill: var.$orange-light;
+      }
+    }
+  }
+
+  @include mix.breakpoint-content("medium") {
+    
+    &__heading {
+      display: block;
+    }
+  }
+}

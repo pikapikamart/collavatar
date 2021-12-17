@@ -8,8 +8,8 @@
   @extend %centerized;
   background-color: var.$dark-blue-2;
   justify-content: space-between;
-  height: func.fluid(56, 10vw, 64);
-  padding: 0 func.fluid(16, 3vw, 34) 0 func.fluid(16, 2.8vw, 28);
+  min-height: func.fluid(56, 10vw, 64);
+  padding: func.rem(2) func.fluid(16, 3vw, 34) func.rem(2) func.fluid(16, 2.8vw, 28);
 
   &__block {
     align-items: center;
@@ -19,11 +19,12 @@
   &__logo {
 
     &-wrapper {
-      margin-right: func.fluid(14, 4vw, 46);
+      margin-right: func.fluid(12, 4vw, 46);
     }
 
     &-link {
       display: block;
+      min-width: func.rem(42);
     }
   }
 
@@ -32,6 +33,7 @@
     align-items: flex-start;
     background-color: var.$dark-blue-3;
     border-radius: func.rem(4);
+    margin-right: func.rem(4);
     padding: func.rem(6) func.fluid(12, 2vw, 24);
 
     &-title {
@@ -49,20 +51,19 @@
 }
 
 .notification {
+  margin-right: func.fluid(12, 1.8vw, 18);
   position: relative;
-
-  &__button {
-    background-color: var.$pink;
-    border-radius: 50%;
-    border: 2px solid var.$white;
-    display: grid;
-    height: func.fluid(34, 3.8vw, 38);
-    place-content: center;
-    width: func.fluid(34, 3.8vw, 38);
-  }
 
   &__icon {
     height: func.fluid(19, 2vw, 21);
     width: func.fluid(19, 2vw, 21);
+  }
+}
+
+.user {
+  position: relative;
+
+  &__image {
+    border-radius: 50%;
   }
 }

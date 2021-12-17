@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="294.156" height="351.078" viewBox="0 0 294.156 351.078">
+  <g id="cube-spiral" transform="translate(147 -376)">
+    <g id="Rectangle_55" data-name="Rectangle 55" transform="translate(0.078 432.922) rotate(45)" fill="none" stroke="#a2a2a2" stroke-width="1">
+      <rect width="208" height="208" rx="4" stroke="none"/>
+      <rect x="0.5" y="0.5" width="207" height="207" rx="3.5" fill="none"/>
+    </g>
+    <g id="Rectangle_56" data-name="Rectangle 56" transform="translate(-43 401.933) rotate(30)" fill="none" stroke="#a2a2a2" stroke-width="1">
+      <rect width="208" height="208" rx="4" stroke="none"/>
+      <rect x="0.5" y="0.5" width="207" height="207" rx="3.5" fill="none"/>
+    </g>
+    <g id="Rectangle_59" data-name="Rectangle 59" transform="translate(-146 376)" fill="none" stroke="#a2a2a2" stroke-width="1">
+      <rect width="208" height="208" rx="4" stroke="none"/>
+      <rect x="0.5" y="0.5" width="207" height="207" rx="3.5" fill="none"/>
+    </g>
+  </g>
+</svg>

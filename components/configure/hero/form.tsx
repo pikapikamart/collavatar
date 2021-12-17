@@ -16,7 +16,7 @@ interface FormTarget {
 }
 
 export const HeroForm = () =>{
-  const userProfile: CollavatarUser = useAppSelector(selectUser);
+  const userProfile = useAppSelector(selectUser);
   const [ userPicture, setUserPicture ] = useState("");
   const [ toastData, setToastData ] = useState<ToastNotificationProps | null>(null);
   const [ updateInformation, setUpdateInformation ] = useState<ReturnType<typeof buildFetchedUpdate> | null>(null);
